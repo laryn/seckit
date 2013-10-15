@@ -138,14 +138,15 @@ function seckit_admin_form() {
     '#type' => 'textfield',
     '#default_value' => $options['seckit_xss']['csp']['report-uri'],
     '#title' => 'report-uri',
-    '#description' => t('Specify URI to which user-agents report CSP violations. Leave it as default unless you want another report place. Default is admin/config/system/seckit/csp-report.'),
+    '#description' => t('Specify a URL (relative to the Drupal root) to which user-agents will report CSP violations. Use the default value, unless you have set up an alternative handler for these reports. Defaults to <code>admin/config/system/seckit/csp-report</code> which logs the report data in watchdog.'),
   );
   // CSP policy-uri directive
   $form['seckit_xss']['csp']['policy-uri'] = array(
     '#type' => 'textfield',
     '#default_value' => $options['seckit_xss']['csp']['policy-uri'],
     '#title' => 'policy-uri',
-    '#description' => t("Specify URI to a file containing the policy. It should be text/x-content-security-policy content-type. Note, that policy-uri must only be declated when no other policies are specified. Otherwise, user-agent enforces default-src 'none'. Thus, other directives will be ignored by Security Kit."),);
+    '#description' => t("Specify a URL (relative to the Drupal root) for a file containing the (entire) policy. <strong>All other directives will be omitted</strong> by Security Kit, as <code>policy-uri</code> may only be defined in the <em>absence</em> of other policy definitions in the <code>X-Content-Security-Policy</code> HTTP header. The MIME type for this URI <strong>must</strong> be <code>text/x-content-security-policy</code>, otherwise user-agents will enforce the policy <code>allow 'none'</code>  instead."),
+  );
 
   // fieldset for X-XSS-Protection
   $form['seckit_xss']['x_xss'] = array(

@@ -118,9 +118,9 @@ function _seckit_csp() {
   // prepare directives
   $directives = array();
 
-  // we should allow only policy-uri if it's declared
+  // if policy-uri is declared, no other directives are permitted.
   if ($csp_policy_uri) {
-    $directives = "policy-uri $csp_policy_uri";
+    $directives = "policy-uri " . base_path() . $csp_policy_uri;
   }
   // otherwise prepare directives
   else {
