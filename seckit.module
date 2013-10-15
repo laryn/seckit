@@ -386,6 +386,11 @@ function _seckit_hsts() {
  * Sets default options.
  */
 function _seckit_get_options() {
+  $result = &drupal_static(__FUNCTION__, array());
+  if ($result) {
+    return $result;
+  }
+
   // set default options
   $default['seckit_xss']['csp'] = array(
     'report-only' => 0,
