@@ -203,7 +203,7 @@ function _seckit_x_xss($apply) {
       break;
 
     case SECKIT_X_XSS_DISABLE:
-      default: //do nothing
+    default: // do nothing
       break;
   }
 }
@@ -292,7 +292,7 @@ function _seckit_x_frame($apply) {
       break;
 
     case SECKIT_X_FRAME_DISABLE:
-      default: // do nothing;
+    default: // do nothing
       break;
   }
 }
