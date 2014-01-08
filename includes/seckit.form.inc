@@ -73,6 +73,7 @@ function seckit_admin_form() {
   // CSP default-src directive
   $form['seckit_xss']['csp']['default-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['default-src'],
     '#title' => 'default-src',
     '#description' => t("Specify security policy for all types of content, which are not specified further (frame-ancestors excepted). Default is 'self'."),
@@ -80,6 +81,7 @@ function seckit_admin_form() {
   // CSP script-src directive
   $form['seckit_xss']['csp']['script-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['script-src'],
     '#title' => 'script-src',
     '#description' => t('Specify trustworthy sources for &lt;script&gt; elements.'),
@@ -87,6 +89,7 @@ function seckit_admin_form() {
   // CSP object-src directive
   $form['seckit_xss']['csp']['object-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['object-src'],
     '#title' => 'object-src',
     '#description' => t('Specify trustworthy sources for &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements.'),
@@ -94,6 +97,7 @@ function seckit_admin_form() {
   // CSP style-src directive
   $form['seckit_xss']['csp']['style-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['style-src'],
     '#title' => 'style-src',
     '#description' => t('Specify trustworthy sources for stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
@@ -101,6 +105,7 @@ function seckit_admin_form() {
   // CSP img-src directive
   $form['seckit_xss']['csp']['img-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['img-src'],
     '#title' => 'img-src',
     '#description' => t('Specify trustworthy sources for &lt;img&gt; elements.'),
@@ -108,6 +113,7 @@ function seckit_admin_form() {
   // CSP media-src directive
   $form['seckit_xss']['csp']['media-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['media-src'],
     '#title' => 'media-src',
     '#description' => t('Specify trustworthy sources for &lt;audio&gt; and &lt;video&gt; elements.'),
@@ -115,6 +121,7 @@ function seckit_admin_form() {
   // CSP frame-src directive
   $form['seckit_xss']['csp']['frame-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['frame-src'],
     '#title' => 'frame-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements.'),
@@ -122,6 +129,7 @@ function seckit_admin_form() {
   // CSP font-src directive
   $form['seckit_xss']['csp']['font-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['font-src'],
     '#title' => 'font-src',
     '#description' => t('Specify trustworthy sources for @font-src CSS loads.'),
@@ -129,6 +137,7 @@ function seckit_admin_form() {
   // CSP connect-src directive
   $form['seckit_xss']['csp']['connect-src'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['connect-src'],
     '#title' => 'connect-src',
     '#description' => t('Specify trustworthy sources for XMLHttpRequest, WebSocket and EventSource connections.'),
@@ -136,6 +145,7 @@ function seckit_admin_form() {
   // CSP report-uri directive
   $form['seckit_xss']['csp']['report-uri'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['report-uri'],
     '#title' => 'report-uri',
     '#description' => t('Specify a URL (relative to the Drupal root) to which user-agents will report CSP violations. Use the default value, unless you have set up an alternative handler for these reports. Defaults to <code>admin/config/system/seckit/csp-report</code> which logs the report data in watchdog.'),
@@ -143,6 +153,7 @@ function seckit_admin_form() {
   // CSP policy-uri directive
   $form['seckit_xss']['csp']['policy-uri'] = array(
     '#type' => 'textfield',
+    '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['policy-uri'],
     '#title' => 'policy-uri',
     '#description' => t("Specify a URL (relative to the Drupal root) for a file containing the (entire) policy. <strong>All other directives will be omitted</strong> by Security Kit, as <code>policy-uri</code> may only be defined in the <em>absence</em> of other policy definitions in the <code>X-Content-Security-Policy</code> HTTP header. The MIME type for this URI <strong>must</strong> be <code>text/x-content-security-policy</code>, otherwise user-agents will enforce the policy <code>allow 'none'</code>  instead."),
