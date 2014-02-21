@@ -273,10 +273,10 @@ function _seckit_origin() {
   }
 
   // Allow requests from whitelisted Origins.
-  global $base_url;
+  global $base_root;
   $options = _seckit_get_options();
   $whitelist = explode(',', $options['seckit_csrf']['origin_whitelist']);
-  $whitelist[] = $base_url; // default origin is always allowed
+  $whitelist[] = $base_root; // default origin is always allowed
   if (in_array($origin, $whitelist, TRUE)) {
     return;
   }
