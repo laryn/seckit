@@ -356,7 +356,7 @@ function _seckit_origin() {
     '@ip'     => $remote_addr,
     '@origin' => $origin,
   );
-  watchdog('seckit', 'Possible CSRF attack was blocked. IP address: @ip, Origin: @origin.', $args, WATCHDOG_ERROR);
+  watchdog('seckit', 'Possible CSRF attack was blocked. IP address: @ip, Origin: @origin.', $args, WATCHDOG_WARNING);
   drupal_exit(); // abort request
 }
 
