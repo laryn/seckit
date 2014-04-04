@@ -179,9 +179,14 @@ function _seckit_csp() {
  */
 function _seckit_csp_report() {
   // we should only allow POST data with application/json content type
+  // n.b. The CSP spec (1.0, 1.1) mandates this Content-Type header/value.
+  if (empty($_SERVER['CONTENT_TYPE']) || empty($_SERVER['REQUEST_METHOD'])) {
+    return;
+  }
   $method = $_SERVER['REQUEST_METHOD'];
   $json_type = strstr($_SERVER['CONTENT_TYPE'], 'application/json');
-  $length = $_SERVER['CONTENT_LENGTH'];
+  // Content-Length is optional, so assume a valid value if it is missing.
+  $length = isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : 1;
   if (($method == 'POST') && ($json_type) && ($length > 0)) {
     // get and parse report
     $reports = file_get_contents('php://input');
