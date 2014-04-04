@@ -91,6 +91,66 @@ function seckit_init() {
 }
 
 /**
+ * Implements hook_boot().
+ *
+ * When multiple 'Allow-From' values are configured for X-Frame-Options,
+ * we dynamically set the header so that it is correct even when pages are
+ * served from the page cache.
+ *
+ * In other circumstances, Drupal does not see this implementation.
+ * @see seckit_module_implements_alter().
+ */
+function seckit_boot() {
+  $options = _seckit_get_options();
+  if ($options['seckit_clickjacking']['x_frame'] != SECKIT_X_FRAME_ALLOW_FROM) {
+    return;
+  }
+
+  // If this request's Origin is allowed, we specify that value.
+  // If the origin is not allowed, we can use any other value to prevent
+  // the client from framing the page.
+  $allowed = $options['seckit_clickjacking']['x_frame_allow_from'];
+  $origin = !empty($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+  if (!in_array($origin, $allowed, TRUE)) {
+    $origin = array_pop($allowed);
+  }
+
+  drupal_add_http_header('X-Frame-Options', "Allow-From: $origin");
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * The 'Allow-From' field of X-Frame-Options supports a single origin only.
+ * http://tools.ietf.org/html/rfc7034#section-2.3.2.3
+ *
+ * Consequently, when multiple values are configured we must resort to
+ * hook_boot() to dynamically set the header to the Origin of the current
+ * request, if that is one of the allowed values.
+ *
+ * Conversely, when we do not require hook_boot(), we unset our
+ * implementation, preventing _system_update_bootstrap_status() from
+ * registering it, and anything from invoking it.
+ *
+ * @see seckit_admin_form_submit().
+ */
+function seckit_module_implements_alter(&$implementations, $hook) {
+  if ($hook != 'boot') {
+    return;
+  }
+
+  $options = _seckit_get_options(TRUE);
+  if ($options['seckit_clickjacking']['x_frame'] != SECKIT_X_FRAME_ALLOW_FROM
+    || count($options['seckit_clickjacking']['x_frame_allow_from']) <= 1)
+  {
+    // seckit_boot() is not needed.
+    unset($implementations['seckit']);
+    // In this case, _seckit_x_frame() will generate the header
+    // (which will be cacheable), if it is required.
+  }
+}
+
+/**
  * Sends Content Security Policy HTTP headers.
  *
  * Header specifies Content Security Policy (CSP) for a website,
@@ -322,8 +382,12 @@ function _seckit_x_frame($setting) {
 
     case SECKIT_X_FRAME_ALLOW_FROM:
       $options = _seckit_get_options();
-      $value = $options['seckit_clickjacking']['x_frame_allow_from'];
-      drupal_add_http_header('X-Frame-Options', "Allow-From: $value"); // set X-Frame-Options to Allow-From
+      $allowed = $options['seckit_clickjacking']['x_frame_allow_from'];
+      if (count($allowed) == 1) {
+        $value = array_pop($allowed);
+        drupal_add_http_header('X-Frame-Options', "Allow-From: $value");
+      }
+      // If there were multiple values, then seckit_boot() took care of it.
       break;
 
     case SECKIT_X_FRAME_DISABLE:
@@ -408,11 +472,23 @@ function _seckit_hsts() {
 }
 
 /**
+ * Converts a multi-line configuration option to an array.
+ * Sanitises by trimming whitespace, and filtering empty options.
+ */
+function _seckit_explode_value($string) {
+  $values = explode("\n", $string);
+  return array_values(array_filter(array_map('trim', $values)));
+}
+
+/**
  * Sets default options.
  */
-function _seckit_get_options() {
+function _seckit_get_options($reset = FALSE) {
   $result = &drupal_static(__FUNCTION__, array());
-  if ($result) {
+  if ($reset) {
+    $result = array();
+  }
+  elseif ($result) {
     return $result;
   }
 
@@ -478,6 +554,9 @@ function _seckit_get_options() {
   if (!isset($result['seckit_clickjacking']['x_frame'])) {
     $result['seckit_clickjacking']['x_frame'] = SECKIT_X_FRAME_SAMEORIGIN;
   }
+  $x_frame_allow_from =& $result['seckit_clickjacking']['x_frame_allow_from'];
+  $x_frame_allow_from = _seckit_explode_value($x_frame_allow_from);
+
   // set Custom text for disabled JavaScript message
   if (!isset($result['seckit_clickjacking']['noscript_message'])) {
     $result['seckit_clickjacking']['noscript_message'] = t('Sorry, you need to enable JavaScript to visit this website.');

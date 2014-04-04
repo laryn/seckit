@@ -257,12 +257,13 @@ function seckit_admin_form() {
     '#default_value' => $options['seckit_clickjacking']['x_frame'],
     '#description' => $description,
   );
-  // source for "Allow-From" option
+
+  // Origin value for "Allow-From" option.
   $form['seckit_clickjacking']['x_frame_allow_from'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Allow-From'),
-    '#default_value' => $options['seckit_clickjacking']['x_frame_allow_from'],
-    '#description' => t('URI of source for "X-Frame-Options: Allow-From" value. Example, http://domain.com'),
+    '#default_value' => implode("\n", $options['seckit_clickjacking']['x_frame_allow_from']),
+    '#description' => t('Origin URIs (as specified by RFC 6454) for the "X-Frame-Options: Allow-From" value. One per line. Example, http://domain.com'),
   );
 
   // enable/disable JS + CSS + Noscript protection
@@ -351,11 +352,14 @@ function seckit_admin_form() {
     '#description' => t('Trustworthy destination. Possible variants are: !items', $args),
   );
 
-  // validation and submit
+  // Execute the default handlers first.
+  $form = system_settings_form($form);
+
+  // Run custom validation and submission handlers afterwards.
   $form['#validate'][] = 'seckit_admin_form_validate';
   $form['#submit'][] = 'seckit_admin_form_submit';
 
-  return system_settings_form($form);
+  return $form;
 }
 
 /**
@@ -370,9 +374,11 @@ function seckit_admin_form_validate($form, &$form_state) {
   }
   // if X-Frame-Options is set to Allow-From, it should be explicitly set
   $x_frame_value = $form_state['values']['seckit_clickjacking']['x_frame'];
-  $x_frame_allow_from = $form_state['values']['seckit_clickjacking']['x_frame_allow_from'];
-  if (($x_frame_value == SECKIT_X_FRAME_ALLOW_FROM) && (!$x_frame_allow_from)) {
-    form_error($form['seckit_clickjacking']['x_frame_allow_from'], t('You have to set up trustworthy destination for X-Frame-Options: Allow-From HTTP response header.'));
+  if ($x_frame_value == SECKIT_X_FRAME_ALLOW_FROM) {
+    $x_frame_allow_from = $form_state['values']['seckit_clickjacking']['x_frame_allow_from'];
+    if (!_seckit_explode_value($x_frame_allow_from)) {
+      form_error($form['seckit_clickjacking']['x_frame_allow_from'], t('You must specify a trusted Origin for the Allow-From value of the X-Frame-Options HTTP response header.'));
+    }
   }
   // if HTTP Strict Transport Security is enabled, max-age must be specified.
   // HSTS max-age should only contain digits.
@@ -408,4 +414,8 @@ function seckit_admin_form_submit($form, &$form_state) {
     $msg = 'X-Content-Type-Options HTTP response header will not be served for files because of public file system. It is recommended to enable private file system to ensure provided by X-Content-Type-Options security.';
     drupal_set_message($msg, 'warning');
   }
+
+  // Our depencency on seckit_boot() may have changed, so reset the
+  // bootstrap module settings and cache.
+  _system_update_bootstrap_status();
 }
