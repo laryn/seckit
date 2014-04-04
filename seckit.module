@@ -352,7 +352,7 @@ function _seckit_get_js_css_noscript_code() {
       </script>
       <script type="text/javascript" src="$path/js/seckit.document_write.js"></script>
       <link type="text/css" rel="stylesheet" id="seckit-clickjacking-no-body" media="all" href="$path/css/seckit.no_body.css" />
-      <! stop SecKit protection -->
+      <!-- stop SecKit protection -->
       <noscript>
       <link type="text/css" rel="stylesheet" id="seckit-clickjacking-noscript-tag" media="all" href="$path/css/seckit.noscript_tag.css" />
       <div id="seckit-noscript-tag">
