@@ -8,8 +8,17 @@
  * Forms administration page.
  */
 function seckit_admin_form() {
-  // get default/set options
-  $options = _seckit_get_options();
+  // Get default/configured (and unaltered) options.
+  if ($hooks = module_implements('seckit_options_alter')) {
+    foreach ($hooks as $key => $module) {
+      $hooks[$key] = $module . '_seckit_options_alter()';
+    }
+    drupal_set_message(t("Some settings may be overridden at runtime. See @hooks.", array('@hooks' => implode(', ', $hooks))), 'status', FALSE);
+    $options = _seckit_get_options(TRUE, FALSE);
+  }
+  else {
+    $options = _seckit_get_options();
+  }
 
   // main description
   $args['!browserscope'] = l(t('Browserscope'), 'http://www.browserscope.org/?category=security');

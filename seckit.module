@@ -482,8 +482,16 @@ function _seckit_explode_value($string) {
 
 /**
  * Sets default options.
+ *
+ * @param boolean $reset
+ *   If TRUE then re-generate (and re-cache) the options.
+ *
+ * @param boolean $alter
+ *   Whether to invoke hook_seckit_options_alter().
+ *   (Used internally to prevent altered values being used
+ *   in the admin settings form.)
  */
-function _seckit_get_options($reset = FALSE) {
+function _seckit_get_options($reset = FALSE, $alter = TRUE) {
   $result = &drupal_static(__FUNCTION__, array());
   if ($reset) {
     $result = array();
@@ -568,6 +576,10 @@ function _seckit_get_options($reset = FALSE) {
   // set From-Origin to same
   if (!isset($result['seckit_various']['from_origin_destination'])) {
     $result['seckit_various']['from_origin_destination'] = 'same';
+  }
+
+  if ($alter) {
+    drupal_alter('seckit_options', $result);
   }
   return $result;
 }
