@@ -184,10 +184,11 @@ function _seckit_csp_report() {
     return;
   }
   $method = $_SERVER['REQUEST_METHOD'];
-  $json_type = strstr($_SERVER['CONTENT_TYPE'], 'application/json');
+  $is_report = strstr($_SERVER['CONTENT_TYPE'], 'application/csp-report') || strstr($_SERVER['CONTENT_TYPE'], 'application/json');
   // Content-Length is optional, so assume a valid value if it is missing.
   $length = isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : 1;
-  if (($method == 'POST') && ($json_type) && ($length > 0)) {
+
+  if (($method == 'POST') && ($is_report) && ($length > 0)) {
     // get and parse report
     $reports = file_get_contents('php://input');
     $reports = json_decode($reports);
