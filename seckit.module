@@ -333,8 +333,7 @@ function _seckit_origin() {
     return;
   }
   // Allow requests from localhost.
-  $remote_addr = $_SERVER['REMOTE_ADDR'];
-  if (in_array($remote_addr, array('localhost', '127.0.0.1', '::1'), TRUE)) {
+  if (in_array(ip_address(), array('localhost', '127.0.0.1', '::1'), TRUE)) {
     return;
   }
 
@@ -353,7 +352,7 @@ function _seckit_origin() {
   $_POST = array();
   drupal_access_denied(); // send 403 response and show Access Denied page
   $args = array(
-    '@ip'     => $remote_addr,
+    '@ip'     => ip_address(),
     '@origin' => $origin,
   );
   watchdog('seckit', 'Possible CSRF attack was blocked. IP address: @ip, Origin: @origin.', $args, WATCHDOG_WARNING);
