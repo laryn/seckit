@@ -489,7 +489,74 @@ function _seckit_explode_value($string) {
 }
 
 /**
- * Sets default options.
+ * Define the default values for our settings variables.
+ *
+ * @see _seckit_get_options().
+ */
+function _seckit_get_options_defaults() {
+  $defaults = array();
+
+  // Defaults for variable_get('seckit_xss');
+  $defaults['seckit_xss'] = array(
+    // Content Security Policy (CSP)
+    'csp' => array(
+      'checkbox' => 0, // CSP disabled by default
+      'report-only' => 0,
+      'default-src' => "'self'",
+      'script-src' => '',
+      'object-src' => '',
+      'style-src' => '',
+      'img-src' => '',
+      'media-src' => '',
+      'frame-src' => '',
+      'font-src' => '',
+      'connect-src' => '',
+      'report-uri' => 'admin/config/system/seckit/csp-report',
+      'policy-uri' => '',
+    ),
+    // X-XSS-Protection header.
+    'x_xss' => array(
+      'select' => SECKIT_X_XSS_DISABLE, // Disabled by default.
+    ),
+    // X-Content-Type-Options header.
+    'x_content_type' => array(
+      'checkbox' => 1, // Enabled by default.
+    ),
+  );
+
+  // Defaults for variable_get('seckit_csrf');
+  // Enable Origin-based protection.
+  $defaults['seckit_csrf'] = array(
+    'origin' => 1,
+    'origin_whitelist' => '',
+  );
+
+  // Defaults for variable_get('seckit_clickjacking');
+  $defaults['seckit_clickjacking'] = array(
+    'x_frame' => SECKIT_X_FRAME_SAMEORIGIN,
+    'x_frame_allow_from' => '',
+    'js_css_noscript' => 0, // Do not require Javascript by default!
+    'noscript_message' => t('Sorry, you need to enable JavaScript to visit this website.'),
+  );
+
+  // Defaults for variable_get('seckit_ssl');
+  $defaults['seckit_ssl'] = array(
+    'hsts' => 0,
+    'hsts_max_age' => 1000,
+    'hsts_subdomains' => 0,
+  );
+
+  // Defaults for variable_get('seckit_various');
+  $defaults['seckit_various'] = array(
+    'from_origin' => 0,
+    'from_origin_destination' => 'same',
+  );
+
+  return $defaults;
+}
+
+/**
+ * Return the current SecKit settings.
  *
  * @param boolean $reset
  *   If TRUE then re-generate (and re-cache) the options.
@@ -500,94 +567,45 @@ function _seckit_explode_value($string) {
  *   in the admin settings form.)
  */
 function _seckit_get_options($reset = FALSE, $alter = TRUE) {
-  $result = &drupal_static(__FUNCTION__, array());
+  $options = &drupal_static(__FUNCTION__, array());
   if ($reset) {
-    $result = array();
+    $options = array();
   }
-  elseif ($result) {
-    return $result;
+  elseif ($options) {
+    return $options;
   }
 
-  // set default options
-  $default['seckit_xss']['csp'] = array(
-    'report-only' => 0,
-    'script-src'  => '',
-    'object-src'  => '',
-    'img-src'     => '',
-    'media-src'   => '',
-    'style-src'   => '',
-    'frame-src'   => '',
-    'font-src'    => '',
-    'connect-src' => '',
-    'policy-uri'  => '',
-  );
-  $default['seckit_csrf'] = array(
-    'origin'           => 1,
-    'origin_whitelist' => '',
-  );
-  $default['seckit_clickjacking'] = array(
-    'js_css_noscript' => 0,
-    'x_frame_allow_from' => '',
-  );
-  $default['seckit_ssl'] = array(
-    'hsts'            => 0,
-    'hsts_subdomains' => 0,
-  );
-  $default['seckit_various'] = array(
-    'from_origin' => 0,
-  );
-  // get variables
-  $result['seckit_xss']          = variable_get('seckit_xss', $default['seckit_xss']);
-  $result['seckit_csrf']         = variable_get('seckit_csrf', $default['seckit_csrf']);
-  $result['seckit_clickjacking'] = variable_get('seckit_clickjacking', $default['seckit_clickjacking']);
-  $result['seckit_ssl']          = variable_get('seckit_ssl', $default['seckit_ssl']);
-  $result['seckit_various']      = variable_get('seckit_various', $default['seckit_various']);
-  // enable Content Security Policy (CSP)
-  if (!isset($result['seckit_xss']['csp']['checkbox'])) {
-    $result['seckit_xss']['csp']['checkbox'] = 0;
+  // Merge the defaults into their associated saved variables, as necessary.
+  // Each (scalar) value will be used only if its key does not exist in the
+  // saved value (if any) for that variable.
+  //
+  // This means that we can introduce new settings with default values,
+  // without affecting the saved values from earlier versions (which do
+  // not yet contain the new keys).
+  $defaults = _seckit_get_options_defaults();
+  foreach (array_keys($defaults) as $option) {
+    $options[$option] = array_replace_recursive(
+      $defaults[$option], variable_get($option, array())
+    );
   }
-  // set CSP default-src directive to self
-  if (!isset($result['seckit_xss']['csp']['default-src']) || !$result['seckit_xss']['csp']['default-src']) {
-    $result['seckit_xss']['csp']['default-src'] = "'self'";
+
+  // Ensure there are non-empty values for the CSP default-src and report-uri
+  // directives.
+  $csp_defaults = $defaults['seckit_xss']['csp'];
+  if (!$options['seckit_xss']['csp']['default-src']) {
+    $options['seckit_xss']['csp']['default-src'] = $csp_defaults['default-src'];
   }
-  // set CSP report-uri directive to menu callback
-  if (!isset($result['seckit_xss']['csp']['report-uri']) || !$result['seckit_xss']['csp']['report-uri']) {
-    $result['seckit_xss']['csp']['report-uri'] = 'admin/config/system/seckit/csp-report';
+  if (!$options['seckit_xss']['csp']['report-uri']) {
+    $options['seckit_xss']['csp']['report-uri'] = $csp_defaults['report-uri'];
   }
-  // set X-XSS-Protection header to disabled (browser default).
-  if (!isset($result['seckit_xss']['x_xss']['select'])) {
-    $result['seckit_xss']['x_xss']['select'] = SECKIT_X_XSS_DISABLE;
-  }
-  // enable X-Content-Type-Options
-  if (!isset($result['seckit_xss']['x_content_type']['checkbox'])) {
-    $result['seckit_xss']['x_content_type']['checkbox'] = 1;
-  }
-  // enable Origin-based protection
-  if (!isset($result['seckit_csrf']['origin'])) {
-    $result['seckit_csrf']['origin'] = 1;
-  }
-  // set X-Frame-Options header to SameOrigin
-  if (!isset($result['seckit_clickjacking']['x_frame'])) {
-    $result['seckit_clickjacking']['x_frame'] = SECKIT_X_FRAME_SAMEORIGIN;
-  }
-  $x_frame_allow_from =& $result['seckit_clickjacking']['x_frame_allow_from'];
+
+  // Convert ['seckit_clickjacking']['x_frame_allow_from'] to an array.
+  $x_frame_allow_from =& $options['seckit_clickjacking']['x_frame_allow_from'];
   $x_frame_allow_from = _seckit_explode_value($x_frame_allow_from);
 
-  // set Custom text for disabled JavaScript message
-  if (!isset($result['seckit_clickjacking']['noscript_message'])) {
-    $result['seckit_clickjacking']['noscript_message'] = t('Sorry, you need to enable JavaScript to visit this website.');
-  }
-  // set HSTS max-age to 1000
-  if (!isset($result['seckit_ssl']['hsts_max_age'])) {
-    $result['seckit_ssl']['hsts_max_age'] = 1000;
-  }
-  // set From-Origin to same
-  if (!isset($result['seckit_various']['from_origin_destination'])) {
-    $result['seckit_various']['from_origin_destination'] = 'same';
-  }
-
+  // Process alterations and return.
   if ($alter) {
-    drupal_alter('seckit_options', $result);
+    drupal_alter('seckit_options', $options);
   }
-  return $result;
+  return $options;
 }
