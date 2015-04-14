@@ -19,6 +19,7 @@ function seckit_admin_form() {
   else {
     $options = _seckit_get_options();
   }
+  $defaults = _seckit_get_options_defaults();
 
   // main description
   $args = array(
@@ -46,6 +47,7 @@ function seckit_admin_form() {
     '#type' => 'fieldset',
     '#title' => t('Content Security Policy'),
     '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_xss']['csp']['checkbox'],
     '#tree' => TRUE,
     '#description' => t('Content Security Policy is a policy framework that allows to specify trustworthy sources of content and to restrict its capabilities. You may read more about it at !wiki.', $args),
   );
@@ -177,8 +179,9 @@ function seckit_admin_form() {
   // fieldset for X-XSS-Protection
   $form['seckit_xss']['x_xss'] = array(
     '#type' => 'fieldset',
-    '#title' => t('X-XSS-Protection'),
+    '#title' => t('X-XSS-Protection header'),
     '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_xss']['x_xss']['select'] == SECKIT_X_XSS_DISABLE),
     '#tree' => TRUE,
     '#description' => t('X-XSS-Protection HTTP response header controls Microsoft Internet Explorer, Google Chrome and Apple Safari internal XSS filters.'),
   );
@@ -211,8 +214,9 @@ function seckit_admin_form() {
   );
   $form['seckit_xss']['x_content_type'] = array(
     '#type' => 'fieldset',
-    '#title' => t('X-Content-Type-Options'),
+    '#title' => t('X-Content-Type-Options header'),
     '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_xss']['x_content_type']['checkbox'],
     '#tree' => TRUE,
     '#description' => t('X-Content-Type-Options HTTP response header prevents browser from upsniffing content and serving files with inappropriate MIME type. More information is available at !link.', $args),
   );
@@ -230,9 +234,9 @@ function seckit_admin_form() {
     '#title' => t('Cross-site Request Forgery'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_csrf']['origin'],
     '#description' => t('Configure levels and various techniques of protection from cross-site request forgery attacks'),
   );
-
   // enable/disable Origin
   $form['seckit_csrf']['origin'] = array(
     '#type' => 'checkbox',
@@ -254,8 +258,18 @@ function seckit_admin_form() {
     '#type' => 'fieldset',
     '#title' => t('Clickjacking'),
     '#collapsible' => TRUE,
-    '#tree' => TRUE,
+    '#tree' => FALSE,
     '#description' => t('Configure levels and various techniques of protection from Clickjacking/UI Redressing attacks'),
+  );
+
+  // fieldset for X-Frame-Options settings. non-#tree.
+  $form['seckit_clickjacking']['x_frame_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('X-Frame-Options header'),
+    '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_clickjacking']['x_frame'] == SECKIT_X_FRAME_DISABLE),
+    '#tree' => FALSE,
+    '#description' => t('Configure the X-Frame-Options HTTP header'),
   );
 
   // options for X-Frame-Options
@@ -290,11 +304,26 @@ function seckit_admin_form() {
   );
 
   // Origin value for "Allow-From" option.
-  $form['seckit_clickjacking']['x_frame_allow_from'] = array(
+  $form['seckit_clickjacking']['x_frame_options']['x_frame_allow_from'] = array(
     '#type' => 'textarea',
     '#title' => t('Allow-From'),
     '#default_value' => implode("\n", $options['seckit_clickjacking']['x_frame_allow_from']),
     '#description' => t('Origin URIs (as specified by RFC 6454) for the "X-Frame-Options: Allow-From" value. One per line. Example, http://domain.com'),
+    // Non-tree (we skip a parent).
+    '#parents' => array(
+      'seckit_clickjacking',
+      'x_frame_allow_from',
+    ),
+  );
+
+  // fieldset for JavaScript settings. non-#tree.
+  $form['seckit_clickjacking']['javascript'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('JavaScript-based protection'),
+    '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_clickjacking']['js_css_noscript'],
+    '#tree' => FALSE,
+    '#description' => t("Warning: With this enabled, the site <em>will not work at all</em> for users who have JavaScript disabled (e.g. users running the popular !NoScript browser extension, if they haven't whitelisted your site).", array('!NoScript' => l('NoScript', 'https://noscript.net/'))),
   );
 
   // Enable/disable JS + CSS + Noscript protection
@@ -318,11 +347,16 @@ function seckit_admin_form() {
   );
 
   // custom text for "disabled JavaScript" message
-  $form['seckit_clickjacking']['noscript_message'] = array(
+  $form['seckit_clickjacking']['javascript']['noscript_message'] = array(
     '#type' => 'textfield',
     '#title' => t('Custom text for disabled JavaScript message'),
     '#default_value' => $options['seckit_clickjacking']['noscript_message'],
     '#description' => t('This message will be shown to user when JavaScript is disabled or unsupported in his browser. Default is "Sorry, you need to enable JavaScript to visit this website."'),
+    // Non-tree (we skip a parent).
+    '#parents' => array(
+      'seckit_clickjacking',
+      'noscript_message',
+    ),
   );
 
   // main fieldset for SSL/TLS
@@ -330,6 +364,7 @@ function seckit_admin_form() {
     '#type' => 'fieldset',
     '#title' => t('SSL/TLS'),
     '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_ssl']['hsts']['checkbox'],
     '#tree' => TRUE,
     '#description' => t('Configure various techniques to improve security of SSL/TLS'),
   );
@@ -366,6 +401,7 @@ function seckit_admin_form() {
     '#type' => 'fieldset',
     '#title' => t('Miscellaneous'),
     '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_various'] == $defaults['seckit_various']),
     '#tree' => TRUE,
     '#description' => t('Configure miscellaneous other security enhancements'),
   );

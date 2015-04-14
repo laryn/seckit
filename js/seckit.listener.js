@@ -1,3 +1,7 @@
+// TODO: This code could likely all be converted to Form API #states
+// (allowing us to remove this file entirely).
+// https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_process_states/7
+
 Drupal.behaviors.seckit = {
   attach: function(context) {
     seckit_listener_hsts(context);
