@@ -21,7 +21,9 @@ function seckit_admin_form() {
   }
 
   // main description
-  $args['!browserscope'] = l(t('Browserscope'), 'http://www.browserscope.org/?category=security');
+  $args = array(
+    '!browserscope' => l(t('Browserscope'), 'http://www.browserscope.org/?category=security'),
+  );
   $form['seckit_description'] = array(
     '#type' => 'item',
     '#description' => t('This module provides your website with various options to mitigate risks of common web application vulnerabilities like Cross-site Scripting, Cross-site Request Forgery and Clickjacking. It also has some options to improve your SSL/TLS security and fixes Drupal 6 core Upload module issue leading to an easy exploitation of an old Internet Explorer MIME sniffer HTML injection vulnerability. Note that some security features are not supported by all browsers. You may find this out at !browserscope.', $args),
@@ -37,14 +39,15 @@ function seckit_admin_form() {
   );
 
   // fieldset for Content Security Policy (CSP)
-  $args['!wiki'] = l(t('Mozilla Wiki'), 'https://wiki.mozilla.org/Security/CSP');
-  $description = t('Content Security Policy is a policy framework that allows to specify trustworthy sources of content and to restrict its capabilities. You may read more about it at !wiki.', $args);
+  $args = array(
+    '!wiki' => l(t('Mozilla Wiki'), 'https://wiki.mozilla.org/Security/CSP'),
+  );
   $form['seckit_xss']['csp'] = array(
     '#type' => 'fieldset',
     '#title' => t('Content Security Policy'),
     '#collapsible' => TRUE,
     '#tree' => TRUE,
-    '#description' => $description,
+    '#description' => t('Content Security Policy is a policy framework that allows to specify trustworthy sources of content and to restrict its capabilities. You may read more about it at !wiki.', $args),
   );
   // CSP enable/disable
   $form['seckit_xss']['csp']['checkbox'] = array(
@@ -63,21 +66,24 @@ function seckit_admin_form() {
     '#description' => t('Use Content Security Policy in report-only mode. In this case, violations of policies will only be reported, not blocked. Use this while configuring policies. Reports are logged to watchdog.'),
   );
   // CSP description
-  $items = array(
-    "'none' - block content from any source",
-    "'self' - allow content only from your domain",
-    "'unsafe-inline' - allow specific inline content (note, that it is supported by a subset of directives)",
-    "'unsafe-eval' - allow a set of string-to-code API which is restricted by default (supported by script-src directive)"
+  $args = array(
+    '!keywords' => theme('item_list', array('items' => array(
+                     "'none' - block content from any source",
+                     "'self' - allow content only from your domain",
+                     "'unsafe-inline' - allow specific inline content (note, that it is supported by a subset of directives)",
+                     "'unsafe-eval' - allow a set of string-to-code API which is restricted by default (supported by script-src directive)",
+                   ))),
+    '!wildcards' => theme('item_list', array('items' => array(
+                      '* - load content from any source',
+                      '*.example.com - load content from example.com and all its subdomains',
+                      'example.com:* - load content from example.com via any port.  Otherwise, it will use your website default port',
+                    ))),
+    '!spec' => l(t('specification page'), 'http://www.w3.org/TR/CSP/'),
   );
-  $args['!keywords'] = theme('item_list', array('items' => $items));
-  $items = array('* - load content from any source', '*.example.com - load content from example.com and all its subdomains', 'example.com:* - load content from example.com via any port.  Otherwise, it will use your website default port');
-  $args['!wildcards'] = theme('item_list', array('items' => $items));
-  $args['!spec'] = l(t('specification page'), 'http://www.w3.org/TR/CSP/');
-  $description = t("Set up security policy for different types of content. Don't use www prefix. Keywords are: !keywords Wildcards (*) are allowed: !wildcards More information is available at !spec.", $args);
   $form['seckit_xss']['csp']['description'] = array(
     '#type' => 'item',
     '#title' => t('Directives'),
-    '#description' => $description,
+    '#description' => t("Set up security policy for different types of content. Don't use www prefix. Keywords are: !keywords Wildcards (*) are allowed: !wildcards More information is available at !spec.", $args),
   );
   // CSP default-src directive
   $form['seckit_xss']['csp']['default-src'] = array(
@@ -184,8 +190,13 @@ function seckit_admin_form() {
   );
   // configure X-XSS-Protection
   $link = l(t("IE's XSS filter security flaws in past"), 'http://hackademix.net/2009/11/21/ies-xss-filter-creates-xss-vulnerabilities');
-  $items = array('Disabled - XSS filter will work in default mode. Enabled by default', '0 - XSS filter will be disabled for a website. It may be useful because of ' . $link, '1; mode=block - XSS filter will be left enabled, but it will block entire page instead of modifying dangerous content');
-  $args['!values'] = theme('item_list', array('items' => $items));
+  $args = array(
+    '!values' => theme('item_list', array('items' => array(
+                   'Disabled - XSS filter will work in default mode. Enabled by default',
+                   '0 - XSS filter will be disabled for a website. It may be useful because of ' . $link,
+                   '1; mode=block - XSS filter will be left enabled, but it will block entire page instead of modifying dangerous content',
+                 ))),
+  );
   $form['seckit_xss']['x_xss']['select'] = array(
     '#type' => 'select',
     '#title' => t('Configure'),
@@ -195,7 +206,9 @@ function seckit_admin_form() {
   );
 
   // fieldset for X-Content-Type-Options
-  $args['!link'] = l(t('MSDN article'), 'http://blogs.msdn.com/b/ie/archive/2010/10/26/mime-handling-changes-in-internet-explorer.aspx');
+  $args = array(
+    '!link' => l(t('MSDN article'), 'http://blogs.msdn.com/b/ie/archive/2010/10/26/mime-handling-changes-in-internet-explorer.aspx'),
+  );
   $form['seckit_xss']['x_content_type'] = array(
     '#type' => 'fieldset',
     '#title' => t('X-Content-Type-Options'),
@@ -228,13 +241,12 @@ function seckit_admin_form() {
     '#description' => t('Check Origin HTTP request header.'),
   );
   // Origin whitelist
-  $description = t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080');
   $form['seckit_csrf']['origin_whitelist'] = array(
     '#type' => 'textfield',
     '#title' => t('Allow requests from'),
     '#default_value' => $options['seckit_csrf']['origin_whitelist'],
     '#size' => 90,
-    '#description' => $description,
+    '#description' => t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
   );
 
   // main fieldset for Clickjacking
@@ -254,17 +266,27 @@ function seckit_admin_form() {
     SECKIT_X_FRAME_ALLOW_FROM => 'Allow-From',
   );
   // configure X-Frame-Options
-  $items = array('Disabled - turn off X-Frame-Options', 'SameOrigin - browser allows all the attempts of framing website within its domain. Enabled by default', 'Deny - browser rejects any attempt of framing website', 'Allow-From - browser allows framing website only from specified source');
-  $args['!values'] = theme('item_list', array('items' => $items));
-  $args['!msdn'] = l(t('MSDN article'), 'http://blogs.msdn.com/b/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx');
-  $args['!spec'] = l(t('specification'), 'http://tools.ietf.org/html/draft-ietf-websec-x-frame-options-01');
-  $description = t("X-Frame-Options HTTP response header controls browser's policy of frame rendering. Possible values: !values You may read more about it at !msdn or !spec.", $args);
-  $form['seckit_clickjacking']['x_frame'] = array(
+  $args = array(
+    '!values' => theme('item_list', array('items' => array(
+                   'Disabled - turn off X-Frame-Options',
+                   'SameOrigin - browser allows all the attempts of framing website within its domain. Enabled by default',
+                   'Deny - browser rejects any attempt of framing website',
+                   'Allow-From - browser allows framing website only from specified source',
+                 ))),
+    '!msdn' => l(t('MSDN article'), 'http://blogs.msdn.com/b/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx'),
+    '!spec' => l(t('specification'), 'http://tools.ietf.org/html/draft-ietf-websec-x-frame-options-01'),
+  );
+  $form['seckit_clickjacking']['x_frame_options']['x_frame'] = array(
     '#type' => 'select',
     '#title' => t('X-Frame-Options'),
     '#options' => $x_frame_options,
     '#default_value' => $options['seckit_clickjacking']['x_frame'],
-    '#description' => $description,
+    '#description' => t("X-Frame-Options HTTP response header controls browser's policy of frame rendering. Possible values: !values You may read more about it at !msdn or !spec.", $args),
+    // Non-tree (we skip a parent).
+    '#parents' => array(
+      'seckit_clickjacking',
+      'x_frame',
+    ),
   );
 
   // Origin value for "Allow-From" option.
@@ -275,20 +297,24 @@ function seckit_admin_form() {
     '#description' => t('Origin URIs (as specified by RFC 6454) for the "X-Frame-Options: Allow-From" value. One per line. Example, http://domain.com'),
   );
 
-  // enable/disable JS + CSS + Noscript protection
-  $args['!link'] = l(t('sirdarckcat'), 'http://www.sirdarckcat.net/');
-  $args['%js'] = t('seckit.document_write.js');
-  $args['%write'] = t('document.write()');
-  $args['%stop'] = t('stop SecKit protection');
-  $args['%css'] = t('seckit.no_body.css');
-  $args['%display'] = t('display: none');
-  $description = t('Enable protection via JavaScript, CSS and Noscript tag. This is the most efficient Clickjacking prevention technique. If webiste is not being framed, %js starts commenting with %write and stops when reaches %stop. Thus %css, which sets body display to none, is ignored. If particularly this JavaScript file is being blocked (with XSS filter of Internet Explorer 8 or Safari), %css sets %display to body. If JavaScript is disabled within browser, it shows a special message. Credits for this trick go to !link.', $args);
-  $form['seckit_clickjacking']['js_css_noscript'] = array(
+  // Enable/disable JS + CSS + Noscript protection
+  $args = array(
+    '!link' => l('sirdarckcat', 'http://www.sirdarckcat.net/'),
+    '%js' => 'seckit.document_write.js',
+    '%stop' => '<!-- stop SecKit protection -->',
+    '%css' => 'seckit.no_body.css',
+  );
+  $form['seckit_clickjacking']['javascript']['js_css_noscript'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable JavaScript + CSS + Noscript protection'),
     '#return_value' => 1,
     '#default_value' => $options['seckit_clickjacking']['js_css_noscript'],
-    '#description' => $description,
+    '#description' => t('Enable protection via JavaScript, CSS and &lt;noscript&gt; tag. This is the most efficient Clickjacking prevention technique. If webiste is not being framed, %js starts commenting with <em>document.write()</em> and stops when the comment %stop is reached. Thus %css, which hides the page body, is ignored. If particularly this JavaScript file is being blocked (with XSS filter of Internet Explorer 8 or Safari), %css applies <em>display: none</em> to <em>body</em>, hiding it. If JavaScript is disabled within browser, it shows a special message. Credits for this trick go to !link.', $args),
+    // Non-tree (we skip a parent).
+    '#parents' => array(
+      'seckit_clickjacking',
+      'js_css_noscript',
+    ),
   );
 
   // custom text for "disabled JavaScript" message
@@ -309,7 +335,9 @@ function seckit_admin_form() {
   );
 
   // enable/disable HTTP Strict Transport Security (HSTS)
-  $args['!wiki'] = l(t('Wikipedia'), 'http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security');
+  $args = array(
+    '!wiki' => l(t('Wikipedia'), 'http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security'),
+  );
   $form['seckit_ssl']['hsts'] = array(
     '#type' => 'checkbox',
     '#title' => t('HTTP Strict Transport Security'),
@@ -336,14 +364,16 @@ function seckit_admin_form() {
   // main fieldset for various
   $form['seckit_various'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Various'),
+    '#title' => t('Miscellaneous'),
     '#collapsible' => TRUE,
     '#tree' => TRUE,
-    '#description' => t('Configure various unsorted security enhancements'),
+    '#description' => t('Configure miscellaneous other security enhancements'),
   );
 
   // enable/disable From-Origin
-  $args['!spec'] = l(t('specification'), 'http://www.w3.org/TR/from-origin/');
+  $args = array(
+    '!spec' => l(t('specification'), 'http://www.w3.org/TR/from-origin/'),
+  );
   $form['seckit_various']['from_origin'] = array(
     '#type' => 'checkbox',
     '#title' => t('From-Origin'),
@@ -351,8 +381,12 @@ function seckit_admin_form() {
     '#description' => t('Enable From-Origin HTTP response header. This forces user-agent to retrieve embedded content from your site only to listed destination. More information is available at !spec page.', $args),
   );
   // From-Origin destination
-  $items = array('same - allow loading of content only from your site. Default value.', 'serialized origin - address of trustworthy destination. For example, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080');
-  $args['!items'] = theme('item_list', array('items' => $items));
+  $args = array(
+    '!items' => theme('item_list', array('items' => array(
+                  'same - allow loading of content only from your site. Default value.',
+                  'serialized origin - address of trustworthy destination. For example, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080',
+                ))),
+  );
   $form['seckit_various']['from_origin_destination'] = array(
     '#type' => 'textfield',
     '#title' => t('Allow loading content to'),
