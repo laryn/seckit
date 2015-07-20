@@ -364,7 +364,7 @@ function seckit_admin_form() {
     '#type' => 'fieldset',
     '#title' => t('SSL/TLS'),
     '#collapsible' => TRUE,
-    '#collapsed' => !$options['seckit_ssl']['hsts']['checkbox'],
+    '#collapsed' => !$options['seckit_ssl']['hsts'],
     '#tree' => TRUE,
     '#description' => t('Configure various techniques to improve security of SSL/TLS'),
   );
@@ -387,7 +387,7 @@ function seckit_admin_form() {
     '#description' => t('Specify Max-Age value in seconds. It sets period when user-agent should remember receipt of this header field from this server. Default is 1000.'),
     '#default_value' => $options['seckit_ssl']['hsts_max_age'],
   );
-  // STS includeSubDomains directive
+  // HSTS includeSubDomains directive
   $form['seckit_ssl']['hsts_subdomains'] = array(
     '#type' => 'checkbox',
     '#title' => t('Include Subdomains'),

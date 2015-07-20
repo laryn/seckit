@@ -456,26 +456,24 @@ function _seckit_from_origin() {
 }
 
 /**
- * Sends Strict-Transport-Security HTTP header
+ * Sends HTTP Strict-Transport-Security header (HSTS).
  *
- * HTTP Strict-Transport-Security (HSTS) header prevents eavesdropping and MITM attacks like SSLStrip,
- * forces user-agent to send requests in HTTPS-only mode and convert HTTP links into secure.
+ * The HSTS header prevents certain eavesdropping and MITM attacks like
+ * SSLStrip. It forces the user-agent to send requests in HTTPS-only mode.
+ * e.g.: http:// links are treated as https://
  *
  * Implementation of HSTS is based on the specification draft available at
  * http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02
  */
 function _seckit_hsts() {
-  // get default/set options
   $options = _seckit_get_options();
-  // prepare HSTS header value
-  $max_age = $options['seckit_ssl']['hsts_max_age'];
-  $subdomains = $options['seckit_ssl']['hsts_subdomains'];
-  $header[] = "max-age=$max_age";
-  if ($subdomains) {
+
+  $header[] = sprintf("max-age=%d", $options['seckit_ssl']['hsts_max_age']);
+  if ($options['seckit_ssl']['hsts_subdomains']) {
     $header[] = 'includeSubDomains';
   }
   $header = implode('; ', $header);
-  // send HSTS header
+
   drupal_add_http_header('Strict-Transport-Security', $header);
 }
 
