@@ -395,6 +395,17 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#default_value' => $options['seckit_ssl']['hsts_subdomains'],
   );
+  $args = array(
+    '!HSTS_preload_list' => l(t('HSTS Preload list'), 'https://hstspreload.appspot.com/'),
+  );
+  // HSTS preload directive
+  $form['seckit_ssl']['hsts_preload'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Preload'),
+    '#description' => t("If you intend to submit your domain to the !HSTS_preload_list, you will need to enable the preload flag as confirmation. Don't submit your domain unless you're sure that you can support HTTPS for the long term, as this action cannot be undone.", $args),
+    '#return_value' => 1,
+    '#default_value' => $options['seckit_ssl']['hsts_preload'],
+  );
 
   // main fieldset for various
   $form['seckit_various'] = array(

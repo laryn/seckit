@@ -472,6 +472,9 @@ function _seckit_hsts() {
   if ($options['seckit_ssl']['hsts_subdomains']) {
     $header[] = 'includeSubDomains';
   }
+  if ($options['seckit_ssl']['hsts_preload']) {
+    $header[] = 'preload';
+  }
   $header = implode('; ', $header);
 
   drupal_add_http_header('Strict-Transport-Security', $header);
@@ -542,6 +545,7 @@ function _seckit_get_options_defaults() {
     'hsts' => 0,
     'hsts_max_age' => 1000,
     'hsts_subdomains' => 0,
+    'hsts_preload' => 0,
   );
 
   // Defaults for variable_get('seckit_various');

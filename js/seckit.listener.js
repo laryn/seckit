@@ -45,11 +45,13 @@ function seckit_listener_hsts(context) {
     if ($('#edit-seckit-ssl-hsts').is(':checked')) {
       $('#edit-seckit-ssl-hsts-max-age', context).removeAttr('disabled');
       $('#edit-seckit-ssl-hsts-subdomains', context).removeAttr('disabled');
+      $('#edit-seckit-ssl-hsts-preload', context).removeAttr('disabled');
       $('label[for="edit-seckit-ssl-hsts-max-age"]', context).append('<span title="' + Drupal.t('This field is required.') + '" class="form-required">*</span>');
     }
     else {
       $('#edit-seckit-ssl-hsts-max-age', context).attr('disabled', 'disabled');
       $('#edit-seckit-ssl-hsts-subdomains', context).attr('disabled', 'disabled');
+      $('#edit-seckit-ssl-hsts-preload', context).attr('disabled', 'disabled');
       $('label[for="edit-seckit-ssl-hsts-max-age"] > span', context).remove();
     }
   })(jQuery);
