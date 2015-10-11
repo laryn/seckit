@@ -353,6 +353,13 @@ function _seckit_origin() {
   $whitelist[] = $base_root; // default origin is always allowed
   if (in_array($origin, $whitelist, TRUE)) {
     return;
+    // n.b. RFC 6454 allows Origins to have more than one value (each
+    // separated by a single space).  All values must be on the whitelist
+    // (order is not important).  We intentionally do not handle this
+    // because the feature has been confirmed as a design mistake which
+    // user agents do not utilise in practice.  For details, see
+    // http://lists.w3.org/Archives/Public/www-archive/2012Jun/0001.html
+    // and https://www.drupal.org/node/2406075
   }
 
   // The Origin is invalid, so we deny the request.
