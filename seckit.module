@@ -366,13 +366,18 @@ function _seckit_origin() {
   // Clean the POST data first, as drupal_access_denied() may render a page
   // with forms which check for their submissions.
   $_POST = array();
-  drupal_access_denied(); // send 403 response and show Access Denied page
+
+  // Log the blocked attack.
   $args = array(
     '@ip'     => ip_address(),
     '@origin' => $origin,
   );
   watchdog('seckit', 'Possible CSRF attack was blocked. IP address: @ip, Origin: @origin.', $args, WATCHDOG_WARNING);
-  drupal_exit(); // abort request
+
+  // Deliver the 403 (access denied) error page to the user.
+  drupal_access_denied();
+  // Abort this request.
+  drupal_exit();
 }
 
 /**
