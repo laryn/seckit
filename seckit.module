@@ -14,6 +14,7 @@ define('SECKIT_X_FRAME_DISABLE', 0); // disable X-Frame-Options HTTP header
 define('SECKIT_X_FRAME_SAMEORIGIN', 1); // set X-Frame-Options HTTP header to SameOrigin
 define('SECKIT_X_FRAME_DENY', 2); // set X-Frame-Options HTTP header to Deny
 define('SECKIT_X_FRAME_ALLOW_FROM', 3); // set X-Frame-Options HTTP header to Allow-From
+define('SECKIT_CSP_REPORT_URL', 'report-csp-violation');
 
 /**
  * Implements hook_permission().
@@ -31,7 +32,7 @@ function seckit_permission() {
  * Implements hook_menu().
  */
 function seckit_menu() {
-  // settings page
+  // Settings page
   $items['admin/config/system/seckit'] = array(
     'title'            => 'Security Kit',
     'page callback'    => 'drupal_get_form',
@@ -40,12 +41,25 @@ function seckit_menu() {
     'access arguments' => array('administer seckit'),
     'file'             => 'includes/seckit.form.inc',
   );
-  // menu callback for CSP reporting
-  $items['admin/config/system/seckit/csp-report'] = array(
+
+  // Menu callback for CSP reporting
+  $items[SECKIT_CSP_REPORT_URL] = array(
     'page callback'   => '_seckit_csp_report',
     'access callback' => TRUE,
     'type'            => MENU_CALLBACK,
   );
+  // Original path for the above; deprecated in 7.x-1.10. It is important
+  // that this remains valid for now, as the CSP headers in cached pages
+  // will report the path as it was at the time they were cached.
+  //
+  // TODO: Remove this in some future release. There is no hurry to do this;
+  // it is better that we maintain this for a few releases (because not
+  // everyone will upgrade at every release), than risk that any CSP
+  // violation reports hit invalid URLs. Note that pages may be cached for
+  // long periods of time. It is probably reasonable to remove this after
+  // minimums of one year and two intervening releases.
+  $items['admin/config/system/seckit/csp-report'] = $items[SECKIT_CSP_REPORT_URL];
+
   return $items;
 }
 
@@ -524,7 +538,7 @@ function _seckit_get_options_defaults() {
       'frame-src' => '',
       'font-src' => '',
       'connect-src' => '',
-      'report-uri' => 'admin/config/system/seckit/csp-report',
+      'report-uri' => SECKIT_CSP_REPORT_URL,
       'policy-uri' => '',
     ),
     // X-XSS-Protection header.

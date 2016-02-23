@@ -93,7 +93,6 @@ function seckit_update_7103() {
   variable_set('seckit_xss', $options);
 }
 
-
 /**
  * Removes Content-Security-Policy "frame-ancestors" directive and "options".
  *
@@ -109,4 +108,24 @@ function seckit_update_7104() {
   // delete and set new version of variable
   variable_del('seckit_xss');
   variable_set('seckit_xss', $options);
+}
+
+/**
+ * Update saved instances of the old (deprecated) CSP report URI.
+ */
+function seckit_update_7105() {
+  // We only care about variable values which are saved in the database.
+  $variables = variable_initialize(array());
+
+  if (!empty($variables['seckit_xss']['csp']['report-uri'])) {
+    $seckit_xss = $variables['seckit_xss'];
+    $deprecated = 'admin/config/system/seckit/csp-report';
+    if ($seckit_xss['csp']['report-uri'] === $deprecated) {
+      $seckit_xss['csp']['report-uri'] = SECKIT_CSP_REPORT_URL;
+      variable_set('seckit_xss', $seckit_xss);
+      return t("Changed CSP violation report path from '@old' to '@new'.",
+               array('@old' => $deprecated,
+                     '@new' => SECKIT_CSP_REPORT_URL));
+    }
+  }
 }

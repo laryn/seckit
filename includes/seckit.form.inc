@@ -165,7 +165,7 @@ function seckit_admin_form() {
     '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['report-uri'],
     '#title' => 'report-uri',
-    '#description' => t('Specify a URL (relative to the Drupal root) to which user-agents will report CSP violations. Use the default value, unless you have set up an alternative handler for these reports. Defaults to <code>admin/config/system/seckit/csp-report</code> which logs the report data in watchdog.'),
+    '#description' => t('Specify a URL (relative to the Drupal root) to which user-agents will report CSP violations. Use the default value of <code>@csp_report_url</code> (which logs the report data in watchdog), unless you have set up an alternative handler for these reports.', array('@csp_report_url' => SECKIT_CSP_REPORT_URL)),
   );
   // CSP policy-uri directive
   $form['seckit_xss']['csp']['policy-uri'] = array(
