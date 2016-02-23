@@ -441,7 +441,7 @@ function _seckit_get_js_css_noscript_code() {
       <noscript>
       <link type="text/css" rel="stylesheet" id="seckit-clickjacking-noscript-tag" media="all" href="$path/css/seckit.noscript_tag.css" />
       <div id="seckit-noscript-tag">
-        <h1>$message</h1>
+        $message
       </div>
       </noscript>
       <script type="text/javascript">
