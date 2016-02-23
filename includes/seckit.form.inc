@@ -338,7 +338,7 @@ function seckit_admin_form() {
     '#title' => t('Enable JavaScript + CSS + Noscript protection'),
     '#return_value' => 1,
     '#default_value' => $options['seckit_clickjacking']['js_css_noscript'],
-    '#description' => t('Enable protection via JavaScript, CSS and &lt;noscript&gt; tag. This is the most efficient Clickjacking prevention technique. If webiste is not being framed, %js starts commenting with <em>document.write()</em> and stops when the comment %stop is reached. Thus %css, which hides the page body, is ignored. If particularly this JavaScript file is being blocked (with XSS filter of Internet Explorer 8 or Safari), %css applies <em>display: none</em> to <em>body</em>, hiding it. If JavaScript is disabled within browser, it shows a special message. Credits for this trick go to !link.', $args),
+    '#description' => t('Enable protection via JavaScript, CSS and &lt;noscript&gt; tag. This is the most efficient Clickjacking prevention technique. If website is not being framed, %js starts commenting with <em>document.write()</em> and stops when the comment %stop is reached. Thus %css, which hides the page body, is ignored. If particularly this JavaScript file is being blocked (with XSS filter of Internet Explorer 8 or Safari), %css applies <em>display: none</em> to <em>body</em>, hiding it. If JavaScript is disabled within browser, it shows a special message. Credits for this trick go to !link.', $args),
     // Non-tree (we skip a parent).
     '#parents' => array(
       'seckit_clickjacking',
