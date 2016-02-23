@@ -441,6 +441,13 @@ function seckit_admin_form() {
     '#size' => 90,
     '#description' => t('Trustworthy destination. Possible variants are: !items', $args),
   );
+  // Disable autocomplete on login and registration forms.
+  $form['seckit_various']['disable_autocomplete'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable autocomplete on login and registration forms'),
+    '#default_value' => $options['seckit_various']['disable_autocomplete'],
+    '#description' => t('Prevent the browser from populating login/registration form fields using its autocomplete functionality. This as populated fields may contain sensitive information, facilitating unauthorized access.'),
+  );
 
   // Execute the default handlers first.
   $form = system_settings_form($form);
