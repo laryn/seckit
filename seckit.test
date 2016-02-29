@@ -171,10 +171,20 @@ class SecKitTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Tests set to 1; mode=block X-XSS-Protection HTTP response header.
+   * Tests set to 1 X-XSS-Protection HTTP response header.
    */
   public function testXXSSProtectionIs1() {
     $form['seckit_xss[x_xss][select]'] = SECKIT_X_XSS_1;
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $this->assertEqual('1', $this->drupalGetHeader('X-XSS-Protection'),
+      t('X-XSS-Protection is set to 1.'));
+  }
+
+  /**
+   * Tests set to 1; mode=block X-XSS-Protection HTTP response header.
+   */
+  public function testXXSSProtectionIs1Block() {
+    $form['seckit_xss[x_xss][select]'] = SECKIT_X_XSS_1_BLOCK;
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->assertEqual('1; mode=block', $this->drupalGetHeader('X-XSS-Protection'),
       t('X-XSS-Protection is set to 1; mode=block.'));
