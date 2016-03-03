@@ -5,7 +5,7 @@
  */
 
 /**
- * Necessary constants.
+ * Define the flags/values for certain options.
  */
 define('SECKIT_X_XSS_DISABLE', 0); // disable X-XSS-Protection HTTP header
 define('SECKIT_X_XSS_0', 1); // set X-XSS-Protection HTTP header to 0
@@ -16,6 +16,15 @@ define('SECKIT_X_FRAME_SAMEORIGIN', 1); // set X-Frame-Options HTTP header to Sa
 define('SECKIT_X_FRAME_DENY', 2); // set X-Frame-Options HTTP header to Deny
 define('SECKIT_X_FRAME_ALLOW_FROM', 3); // set X-Frame-Options HTTP header to Allow-From
 define('SECKIT_CSP_REPORT_URL', 'report-csp-violation');
+
+/**
+ * Default limits for CSP violation reports.
+ */
+define('SECKIT_CSP_REPORT_MAX_SIZE', 4096); // Max accepted byte count
+define('SECKIT_CSP_REPORT_FLOOD_LIMIT_USER', 100); // Max reports per IP address...
+define('SECKIT_CSP_REPORT_FLOOD_WINDOW_USER', 900); // ...per time window (in seconds)
+define('SECKIT_CSP_REPORT_FLOOD_LIMIT_GLOBAL', 1000); // Max reports globally...
+define('SECKIT_CSP_REPORT_FLOOD_WINDOW_GLOBAL', 3600); // ...per time window (in seconds)
 
 /**
  * Implements hook_permission().
@@ -70,6 +79,10 @@ function seckit_menu() {
 function seckit_init() {
   // get default/set options
   $options = _seckit_get_options();
+
+  if ($options['seckit_advanced']['disable_seckit']) {
+    return;
+  }
 
   // execute necessary functions
   if ($options['seckit_csrf']['origin']) {
@@ -306,8 +319,22 @@ function _seckit_csp_report() {
     return;
   }
 
+  // Check for flooding.
+  // Do not write to watchdog when our limits are exceeded.
+  $options = _seckit_get_options();
+  $enforce_limits = !$options['seckit_advanced']['unlimited_csp_reports'];
+  if ($enforce_limits && _seckit_csp_report_flooding_detected()) {
+    return;
+  }
+
   // Get and parse report.
   $reports = file_get_contents('php://input');
+  if ($enforce_limits) {
+    $max_size = $options['seckit_advanced']['csp_limits']['max_size'];
+    if (strlen($reports) > $max_size) {
+      return;
+    }
+  }
   $reports = json_decode($reports);
   if (!is_object($reports)) {
     return;
@@ -318,6 +345,8 @@ function _seckit_csp_report() {
     if (!isset($report->{'violated-directive'})) {
       continue;
     }
+
+    // Log the violation to watchdog.
     $info = array(
       '@directive'   => $report->{'violated-directive'},
       '@blocked_uri' => $report->{'blocked-uri'},
@@ -325,6 +354,50 @@ function _seckit_csp_report() {
     );
     watchdog('seckit', 'CSP: Directive @directive violated.<br /> Blocked URI: @blocked_uri.<br /> <pre>Data: @data</pre>', $info, WATCHDOG_WARNING);
   }
+}
+
+/**
+ * Check for CSP violation report flooding.
+ *
+ * @return (bool)
+ *   TRUE if flooding is detected (report logging should be inhibited).
+ *   FALSE if it is safe to proceed with logging the report.
+ */
+function _seckit_csp_report_flooding_detected() {
+  $options = _seckit_get_options();
+  $flood_options = $options['seckit_advanced']['csp_limits']['flood'];
+
+  // The global limit provides some DDOS protection.
+  $global_limit = $flood_options['limit_global'];
+  $global_window = $flood_options['window_global'];
+  // flood_is_allowed() does not presently allow us to ignore the identifier,
+  // meaning we would need to log two flood events per CSP report in order to
+  // check both the global and per-user counts using the API function. This
+  // query enables us to do this while only registering one event per report.
+  // @see https://www.drupal.org/node/2472941
+  $sql = "
+    SELECT COUNT(*)
+      FROM {flood}
+     WHERE event = 'seckit_csp_report'
+       AND timestamp > :timestamp
+  ";
+  $args = array(':timestamp' => REQUEST_TIME - $global_window);
+  $global_count = db_query($sql, $args)->fetchField();
+  if ($global_count >= $global_limit) {
+    return TRUE; // Flooding is in effect
+  }
+
+  // Per-user limit.
+  $user_limit = $flood_options['limit_user'];
+  $user_window = $flood_options['window_user'];
+  if (!flood_is_allowed('seckit_csp_report', $user_limit, $user_window)) {
+    return TRUE; // Flooding is in effect
+  }
+
+  // Flooding is not in effect. Log this event, and return the status.
+  flood_register_event('seckit_csp_report', $user_window);
+
+  return FALSE; // No flooding
 }
 
 /**
@@ -623,6 +696,22 @@ function _seckit_get_options_defaults() {
     'from_origin' => 0,
     'from_origin_destination' => 'same',
     'disable_autocomplete' => 0,
+  );
+
+  // Advanced / Development options.
+  // Defaults for variable_get('seckit_advanced');
+  $defaults['seckit_advanced'] = array(
+    'disable_seckit' => 0,
+    'unlimited_csp_reports' => 0,
+    'csp_limits' => array(
+      'max_size' => SECKIT_CSP_REPORT_MAX_SIZE,
+      'flood' => array(
+        'limit_user' => SECKIT_CSP_REPORT_FLOOD_LIMIT_USER,
+        'window_user' => SECKIT_CSP_REPORT_FLOOD_WINDOW_USER,
+        'limit_global' => SECKIT_CSP_REPORT_FLOOD_LIMIT_GLOBAL,
+        'window_global' => SECKIT_CSP_REPORT_FLOOD_WINDOW_GLOBAL,
+      ),
+    ),
   );
 
   return $defaults;

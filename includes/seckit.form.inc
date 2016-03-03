@@ -67,6 +67,16 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#description' => t('Use Content Security Policy in report-only mode. In this case, violations of policies will only be reported, not blocked. Use this while configuring policies. Reports are logged to watchdog.'),
   );
+  $form['seckit_xss']['csp']['csp_limits'] = array(
+    '#type' => 'item',
+    '#title' => t("CSP violation reporting limits are currently disabled. See !Advanced_options below.", array('!Advanced_options' => '<a href="#edit-seckit-advanced">' . t('Advanced options') . '</a>')),
+    '#description' => t("Reporting limits should be enabled once your CSP is production-ready, to prevent excessive report logging should the violation report URL be flooded."),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
   // CSP description
   $args = array(
     '!keywords' => theme('item_list', array('items' => array(
@@ -458,6 +468,86 @@ function seckit_admin_form() {
     '#title' => t('Disable autocomplete on login and registration forms'),
     '#default_value' => $options['seckit_various']['disable_autocomplete'],
     '#description' => t('Prevent the browser from populating login/registration form fields using its autocomplete functionality. This as populated fields may contain sensitive information, facilitating unauthorized access.'),
+  );
+
+  // Advanced / developer options.
+  $form['seckit_advanced'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_advanced'] == $defaults['seckit_advanced']),
+    '#tree' => TRUE,
+    // '#description' => t(''),
+  );
+  $form['seckit_advanced']['disable_seckit'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => $options['seckit_advanced']['disable_seckit'],
+    '#title' => t('Disable Security Kit'),
+    '#description' => t('Prevent the module from doing anything.'),
+  );
+  if ($options['seckit_advanced']['disable_seckit'] && empty($_POST)) {
+    drupal_set_message(t("Security Kit is currently disabled in the Advanced options (below)."), 'warning');
+  }
+
+  // CSP report limits
+  $form['seckit_advanced']['unlimited_csp_reports'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => $options['seckit_advanced']['unlimited_csp_reports'],
+    '#title' => t('Unlimited CSP reports'),
+    '#description' => t('Ignore restrictions on the size and quantity of CSP violation reports. This should be disabled once the CSP is production-ready.'),
+  );
+  $form['seckit_advanced']['csp_limits'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CSP violation reporting limits'),
+    '#description' => t("Reports breaching these limits will not be logged."),
+    '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_advanced']['csp_limits'] == $defaults['seckit_advanced']['csp_limits']),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+  $limits = $options['seckit_advanced']['csp_limits'];
+  $form['seckit_advanced']['csp_limits']['max_size'] = array(
+    '#title' => t('Maximum report size (bytes)'),
+    '#type' => 'textfield',
+    '#maxlength'=> 16,
+    '#default_value' => $limits['max_size'],
+  );
+  $form['seckit_advanced']['csp_limits']['flood'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Flood settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => ($options['seckit_advanced']['csp_limits']['flood'] == $defaults['seckit_advanced']['csp_limits']['flood']),
+  );
+  $form['seckit_advanced']['csp_limits']['flood']['limit_user'] = array(
+    '#title' => t('Maximum reports per IP address'),
+    '#description' => t('Applicable within the given time window'),
+    '#type' => 'textfield',
+    '#maxlength'=> 16,
+    '#default_value' => $limits['flood']['limit_user'],
+  );
+  $form['seckit_advanced']['csp_limits']['flood']['window_user'] = array(
+    '#title' => t('Time window for per IP address flood detection'),
+    '#description' => t('Duration in seconds'),
+    '#type' => 'textfield',
+    '#maxlength'=> 16,
+    '#default_value' => $limits['flood']['window_user'],
+  );
+  $form['seckit_advanced']['csp_limits']['flood']['limit_global'] = array(
+    '#title' => t('Maximum reports globally (i.e. irrespective of IP address)'),
+    '#description' => t('Applicable within the given time window'),
+    '#type' => 'textfield',
+    '#maxlength'=> 16,
+    '#default_value' => $limits['flood']['limit_global'],
+  );
+  $form['seckit_advanced']['csp_limits']['flood']['window_global'] = array(
+    '#title' => t('Time window for global flood detection'),
+    '#description' => t('Duration in seconds'),
+    '#type' => 'textfield',
+    '#maxlength'=> 16,
+    '#default_value' => $limits['flood']['window_global'],
   );
 
   // Execute the default handlers first.
