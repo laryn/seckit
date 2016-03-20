@@ -141,7 +141,15 @@ function seckit_admin_form() {
     '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['frame-src'],
     '#title' => 'frame-src',
-    '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements.'),
+    '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
+  );
+  // CSP child-src directive
+  $form['seckit_xss']['csp']['child-src'] = array(
+    '#type' => 'textfield',
+    '#maxlength'=> 1024,
+    '#default_value' => $options['seckit_xss']['csp']['child-src'],
+    '#title' => 'child-src',
+    '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements as well as for loading Workers.'),
   );
   // CSP font-src directive
   $form['seckit_xss']['csp']['font-src'] = array(
