@@ -97,9 +97,11 @@ function seckit_init() {
   if ($options['seckit_xss']['x_content_type']['checkbox']) {
     _seckit_x_content_type_options();
   }
-  if ($options['seckit_clickjacking']['x_frame']) {
-    _seckit_x_frame($options['seckit_clickjacking']['x_frame']);
-  }
+
+  // Always call this (regardless of the setting) since if it's disabled it may
+  // be necessary to actively disable the Drupal core clickjacking defense.
+  _seckit_x_frame($options['seckit_clickjacking']['x_frame']);
+
   if ($options['seckit_clickjacking']['js_css_noscript']) {
     _seckit_js_css_noscript();
   }
@@ -541,7 +543,9 @@ function _seckit_x_frame($setting) {
       break;
 
     case SECKIT_X_FRAME_DISABLE:
-    default: // do nothing
+      // Make sure Drupal core does not set the header either. See
+      // drupal_deliver_html_page().
+      $GLOBALS['conf']['x_frame_options'] = '';
       break;
   }
 }
