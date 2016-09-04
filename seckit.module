@@ -145,7 +145,7 @@ function seckit_boot() {
     $origin = array_pop($allowed);
   }
 
-  drupal_add_http_header('X-Frame-Options', "Allow-From: $origin");
+  drupal_add_http_header('X-Frame-Options', "Allow-From $origin");
 }
 
 /**
@@ -537,7 +537,7 @@ function _seckit_x_frame($setting) {
       $allowed = $options['seckit_clickjacking']['x_frame_allow_from'];
       if (count($allowed) == 1) {
         $value = array_pop($allowed);
-        drupal_add_http_header('X-Frame-Options', "Allow-From: $value");
+        drupal_add_http_header('X-Frame-Options', "Allow-From $value");
       }
       // If there were multiple values, then seckit_boot() took care of it.
       break;

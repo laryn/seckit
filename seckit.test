@@ -292,7 +292,7 @@ class SecKitTestCase extends DrupalWebTestCase {
     $form['seckit_clickjacking[x_frame]'] = SECKIT_X_FRAME_ALLOW_FROM;
     $form['seckit_clickjacking[x_frame_allow_from]'] = 'http://www.google.com';
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $this->assertEqual('Allow-From: http://www.google.com', $this->drupalGetHeader('X-Frame-Options'),
+    $this->assertEqual('Allow-From http://www.google.com', $this->drupalGetHeader('X-Frame-Options'),
       t('X-Frame-Options is set to Allow-From.'));
   }
 
