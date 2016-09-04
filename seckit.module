@@ -329,14 +329,18 @@ function _seckit_csp_report() {
     return;
   }
 
-  // Get and parse report.
-  $reports = file_get_contents('php://input');
+  // Read the report data.
   if ($enforce_limits) {
-    $max_size = $options['seckit_advanced']['csp_limits']['max_size'];
+    $max_size = (int) $options['seckit_advanced']['csp_limits']['max_size'];
+    $reports = file_get_contents('php://input', FALSE, NULL, 0, $max_size + 1);
     if (strlen($reports) > $max_size) {
       return;
     }
   }
+  else {
+    $reports = file_get_contents('php://input');
+  }
+
   $reports = json_decode($reports);
   if (!is_object($reports)) {
     return;
