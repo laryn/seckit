@@ -55,9 +55,9 @@ function seckit_admin_form() {
   $form['seckit_xss']['csp']['checkbox'] = array(
     '#type' => 'checkbox',
     '#default_value' => $options['seckit_xss']['csp']['checkbox'],
-    '#title' => t('Send HTTP response header'),
+    '#title' => t('Enable Content Security Policy'),
     '#return_value' => 1,
-    '#description' => t('Send Content-Security-Policy (official), X-Content-Security-Policy (supported by Mozilla Firefox and IE10) and X-WebKit-CSP (supported by Google Chrome and Safari) HTTP response headers with the list of Content Security Policy directives.'),
+    '#description' => t('Send Content-Security-Policy (official), X-Content-Security-Policy (supported by Mozilla Firefox and IE10) and X-WebKit-CSP (supported by Google Chrome and Safari) HTTP response headers with the list of Content Security Policy directives. <br/>Violation reports are ignored when this option is disabled.'),
   );
   // CSP report-only mode
   $form['seckit_xss']['csp']['report-only'] = array(

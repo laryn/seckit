@@ -52,7 +52,9 @@ function seckit_menu() {
     'file'             => 'includes/seckit.form.inc',
   );
 
-  // Menu callback for CSP reporting
+  // Menu callback for CSP reporting.
+  // We nominally accept all CSP violation reports (no access callback)
+  // but the page callback avoids processing invalid or unwanted requests.
   $items[SECKIT_CSP_REPORT_URL] = array(
     'page callback'   => '_seckit_csp_report',
     'access callback' => TRUE,
@@ -303,7 +305,7 @@ function _seckit_csp() {
 }
 
 /**
- * Reports CSP violations to watchdog.
+ * Log CSP violation reports to watchdog.
  */
 function _seckit_csp_report() {
   // Only allow POST data with Content-Type application/csp-report
@@ -320,10 +322,26 @@ function _seckit_csp_report() {
   if (!preg_match($pattern, $_SERVER['CONTENT_TYPE'])) {
     return;
   }
+  $options = _seckit_get_options();
+
+  // If SecKit is disabled, do not process the report.
+  if ($options['seckit_advanced']['disable_seckit']) {
+    return;
+  }
+
+  // If the CSP feature is currently disabled, do not process the report.
+  // This could be considered inaccurate (violation reports for a cached page
+  // which was generated with CSP headers might be expected to be processed);
+  // but a single on/off switch for both aspects of CSP support seemed sanest,
+  // and this approach ensures that we do not process requests sent to this URL
+  // before CSP headers have ever been enabled (prior to which reporting limits
+  // are usually ignored to facilitate initial CSP development).
+  if (!$options['seckit_xss']['csp']['checkbox']) {
+    return;
+  }
 
   // Check for flooding.
   // Do not write to watchdog when our limits are exceeded.
-  $options = _seckit_get_options();
   $enforce_limits = !$options['seckit_advanced']['unlimited_csp_reports'];
   if ($enforce_limits && _seckit_csp_report_flooding_detected()) {
     return;
