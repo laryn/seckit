@@ -217,11 +217,11 @@ class SecKitTestCase extends DrupalWebTestCase {
    * Tests HTTP Origin allows requests from the site.
    */
   public function testOriginAllowsSite() {
-    global $base_url;
+    global $base_root;
     $form['seckit_csrf[origin]'] = TRUE;
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'),
-      array(), array('Origin: ' . $base_url));
+      array(), array('Origin: ' . $base_root));
     $this->assertResponse(200,
       t('Request is allowed.'));
   }
