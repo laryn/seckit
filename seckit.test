@@ -362,4 +362,24 @@ class SecKitTestCase extends DrupalWebTestCase {
     $this->assertEqual('same', $this->drupalGetHeader('From-Origin'),
       t('From-Origin is enabled and set to same.'));
   }
+
+  /**
+   * Tests disabled Referrer-Policy HTTP response header.
+   */
+  public function testReferrerPolicyIsDisabled() {
+    $form['seckit_various[referrer_policy]'] = FALSE;
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $this->assertFalse($this->drupalGetHeader('Referrer-Policy'),
+      t('Referrer-Policy is disabled.'));
+  }
+
+  /**
+   * Tests enabled Referrer-Policy HTTP response header.
+   */
+  public function testReferrerPolicyIsEnabled() {
+    $form['seckit_various[referrer_policy]'] = TRUE;
+    $form['seckit_various[referrer_policy_policy]'] = 'no-referrer-when-downgrade';
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $this->assertEqual('no-referrer-when-downgrade', $this->drupalGetHeader('Referrer-Policy'), t('Referrer-Policy is enabled and set to no-referrer-when-downgrade.'));
+  }
 }

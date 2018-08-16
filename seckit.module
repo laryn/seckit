@@ -116,6 +116,9 @@ function seckit_init() {
   if ($options['seckit_various']['from_origin']) {
     _seckit_from_origin();
   }
+  if ($options['seckit_various']['referrer_policy']) {
+    _seckit_referrer_policy();
+  }
 
   // load jQuery listener
   if ($_GET['q'] == 'admin/config/system/seckit') {
@@ -655,6 +658,18 @@ function _seckit_from_origin() {
 }
 
 /**
+ * Sends Referrer-Policy HTTP response header.
+ *
+ * Implementation is based on specification draft
+ * available at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy.
+ */
+function _seckit_referrer_policy() {
+  $options = _seckit_get_options();
+  $value = $options['seckit_various']['referrer_policy_policy'];
+  drupal_add_http_header('Referrer-Policy', $value);
+}
+
+/**
  * Sends HTTP Strict-Transport-Security header (HSTS).
  *
  * The HSTS header prevents certain eavesdropping and MITM attacks like
@@ -759,6 +774,8 @@ function _seckit_get_options_defaults() {
 
   // Defaults for variable_get('seckit_various');
   $defaults['seckit_various'] = array(
+    'referrer_policy' => 0,
+    'referrer_policy_policy' => '',
     'from_origin' => 0,
     'from_origin_destination' => 'same',
     'disable_autocomplete' => 0,

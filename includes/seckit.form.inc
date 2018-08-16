@@ -496,6 +496,57 @@ function seckit_admin_form() {
     '#description' => t('Configure miscellaneous other security enhancements'),
   );
 
+  // Enable/disable Referrer-Policy.
+  $args = array(
+    '!Referrer_Policy_Spec' => l(t('specification'), 'http://www.w3.org/TR/referrer-policy/'),
+  );
+
+  $form['seckit_various']['referrer_policy'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Referrer-Policy'),
+    '#default_value' => $options['seckit_various']['referrer_policy'],
+    '#description' => t('Enable Referrer-Policy HTTP response header. This affects the Referer HTTP header for outgoing requests and navigations. More information is available at the !Referrer_Policy_Spec page.', $args),
+  );
+
+  // Referrer-Policy policy selection.
+  $items = array(
+    t('no-referrer - No referrer information will be sent.'),
+    t('no-referrer-when-downgrade - No referrer information will be sent when navigating from HTTPS to HTTP.'),
+    t('same-origin - Referrer information is sent only with requests to the same origin.'),
+    t('origin - This will strip any path information from the referrer information.'),
+    t('strict-origin - Like no-referrer-when-downgrade, but sends only the origin.'),
+    t('origin-when-cross-origin - Sends full referrer information with same-origin request and origin only with cross-origin requests.'),
+    t('strict-origin-when-cross-origin - Sends full referrer information with same-origin requests, origin only with cross-origin requests, and no referrer information if downgrading from https to http.'),
+    t('unsafe-url - Sends full referrer information with all requests; as the name implies, this is not safe.'),
+    t('"" (empty string) - Default to no-referrer-when-downgrade unless a higher-level policy has been defined elsewhere.'),
+  );
+  $args = array(
+    '!items' => theme('item_list', array('items' => $items)),
+  );
+
+  $referrer_policy_options = array(
+    'no-referrer' => 'no-referrer',
+    'no-referrer-when-downgrade' => 'no-referrer-when-downgrade',
+    'same-origin' => 'same-origin',
+    'strict-origin' => 'strict-origin',
+    'origin-when-cross-origin' => 'origin-when-cross-origin',
+    'strict-origin-when-cross-origin' => 'strict-origin-when-cross-origin',
+    'unsafe-url' => 'unsafe-url',
+    'empty' => t('"" (empty string)'),
+  );
+  $form['seckit_various']['referrer_policy_policy'] = array(
+    '#type' => 'select',
+    '#title' => t('Select policy'),
+    '#default_value' => $options['seckit_various']['referrer_policy_policy'],
+    '#description' => t('Policy options are: !items', $args),
+    '#options' => $referrer_policy_options,
+    '#states' => array(
+      'required' => array(
+        'input[name="seckit_various[referrer_policy]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
   // enable/disable From-Origin
   $args = array(
     '!spec' => l(t('specification'), 'http://www.w3.org/TR/from-origin/'),
