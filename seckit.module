@@ -110,6 +110,9 @@ function seckit_init() {
   if ($options['seckit_ssl']['hsts']) {
     _seckit_hsts();
   }
+  if ($options['seckit_ct']['expect_ct']) {
+    _seckit_expect_ct();
+  }
   if ($options['seckit_various']['from_origin']) {
     _seckit_from_origin();
   }
@@ -612,6 +615,30 @@ EOT;
 }
 
 /**
+ * Sends Excpect-CT HTTP response header.
+ *
+ * Implementation is based on specification draft
+ * available at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT.
+ */
+function _seckit_expect_ct() {
+  $options = _seckit_get_options();
+  if ($options['seckit_ct']['expect_ct']) {
+
+    $header[] = sprintf("max-age=%d", $options['seckit_ct']['max_age']);
+    if ($options['seckit_ct']['enforce']) {
+      $header[] = 'enforce';
+    }
+
+    if ($options['seckit_ct']['report-uri']) {
+      $header[] = 'report-uri="' . $options['seckit_ct']['report-uri'] . '"';
+    }
+
+    $header = implode(', ', $header);
+    drupal_add_http_header('Expect-CT', $header);
+  }
+}
+
+/**
  * Sends From-Origin HTTP response header.
  *
  * Implementation is based on specification draft
@@ -715,6 +742,14 @@ function _seckit_get_options_defaults() {
     'hsts_max_age' => 1000,
     'hsts_subdomains' => 0,
     'hsts_preload' => 0,
+  );
+
+  // Defaults for variable_get('seckit_ct');
+  $defaults['seckit_ct'] = array(
+    'expect_ct' => 0,
+    'max_age' => 1000,
+    'report-uri' => '',
+    'enforce' => 0,
   );
 
   // Defaults for variable_get('seckit_various');

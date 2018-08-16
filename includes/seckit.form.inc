@@ -428,6 +428,56 @@ function seckit_admin_form() {
     '#default_value' => $options['seckit_ssl']['hsts_preload'],
   );
 
+  // main fieldset for Expect-CT
+  $args = array(
+    '!url_docs' => "<a href='https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT'>Mozilla's developer documentation</a>.",
+  );
+  $form['seckit_ct'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Expect-CT'),
+    '#collapsible' => TRUE,
+    '#collapsed' => !$options['seckit_ct']['expect_ct'],
+    '#tree' => TRUE,
+    '#description' => t('Configure the Expect-CT header which allows sites to opt in to reporting and/or enforcement of Certificate Transparency requirements. See !url_docs', $args),
+  );
+
+  // enable/disable the Expect-CT settings.
+  $form['seckit_ct']['expect_ct'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Expect-CT'),
+    '#description' => t('Enable the Expect-CT header.'),
+    '#default_value' => $options['seckit_ct']['expect_ct'],
+    '#return_value' => 1,
+  );
+  // Expect-CT max-age directive
+  $form['seckit_ct']['max_age'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max-Age'),
+    '#description' => t('Specify Max-Age value in seconds.'),
+    '#default_value' => $options['seckit_ct']['max_age'],
+    '#states' => array(
+      'required' => array(
+        'input[name="seckit_ct[expect_ct]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+  // Expect-CT report-uri directive
+  $form['seckit_ct']['report-uri'] = array(
+    '#type' => 'textfield',
+    '#maxlength'=> 1024,
+    '#default_value' => $options['seckit_ct']['report-uri'],
+    '#title' => 'report-uri',
+    '#description' => t('Specify the (absolute) URI to which the user agent should report Expect-CT failures.'),
+  );
+  // Expect-CT enforce directive
+  $form['seckit_ct']['enforce'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enforce'),
+    '#description' => t('Enforce the Certificate Transparency policy.'),
+    '#return_value' => 1,
+    '#default_value' => $options['seckit_ct']['enforce'],
+  );
+
   // main fieldset for various
   $form['seckit_various'] = array(
     '#type' => 'fieldset',

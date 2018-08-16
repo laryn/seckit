@@ -22,6 +22,7 @@ function seckit_uninstall() {
   variable_del('seckit_csrf');
   variable_del('seckit_clickjacking');
   variable_del('seckit_ssl');
+  variable_del('seckit_ct');
   variable_del('seckit_various');
   variable_del('seckit_advanced');
 }
