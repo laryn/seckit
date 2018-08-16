@@ -55,21 +55,22 @@ class SecKitTestCase extends DrupalWebTestCase {
    */
   public function testCSPHasAllDirectives() {
     $form = array(
-      'seckit_xss[csp][checkbox]'    => TRUE,
-      'seckit_xss[csp][default-src]' => '*',
-      'seckit_xss[csp][script-src]'  => '*',
-      'seckit_xss[csp][object-src]'  => '*',
-      'seckit_xss[csp][style-src]'   => '*',
-      'seckit_xss[csp][img-src]'     => '*',
-      'seckit_xss[csp][media-src]'   => '*',
-      'seckit_xss[csp][frame-src]'   => '*',
-      'seckit_xss[csp][child-src]'   => '*',
-      'seckit_xss[csp][font-src]'    => '*',
-      'seckit_xss[csp][connect-src]' => '*',
-      'seckit_xss[csp][report-uri]'  => SECKIT_CSP_REPORT_URL,
+      'seckit_xss[csp][checkbox]'        => TRUE,
+      'seckit_xss[csp][default-src]'     => '*',
+      'seckit_xss[csp][script-src]'      => '*',
+      'seckit_xss[csp][object-src]'      => '*',
+      'seckit_xss[csp][style-src]'       => '*',
+      'seckit_xss[csp][img-src]'         => '*',
+      'seckit_xss[csp][media-src]'       => '*',
+      'seckit_xss[csp][frame-src]'       => '*',
+      'seckit_xss[csp][frame-ancestors]' => '*',
+      'seckit_xss[csp][child-src]'       => '*',
+      'seckit_xss[csp][font-src]'        => '*',
+      'seckit_xss[csp][connect-src]'     => '*',
+      'seckit_xss[csp][report-uri]'      => SECKIT_CSP_REPORT_URL,
     );
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; child-src *; font-src *; connect-src *; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL;
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has all the directves (Official).'));
     $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
@@ -92,6 +93,7 @@ class SecKitTestCase extends DrupalWebTestCase {
       'seckit_xss[csp][img-src]'     => '*',
       'seckit_xss[csp][media-src]'   => '*',
       'seckit_xss[csp][frame-src]'   => '*',
+      'seckit_xss[csp][frame-ancestors]'   => '*',
       'seckit_xss[csp][child-src]'   => '*',
       'seckit_xss[csp][font-src]'    => '*',
       'seckit_xss[csp][connect-src]' => '*',
@@ -114,19 +116,20 @@ class SecKitTestCase extends DrupalWebTestCase {
    */
   public function testCSPAllDirectivesEmpty() {
     $form = array(
-      'seckit_xss[csp][checkbox]'    => TRUE,
-      'seckit_xss[csp][default-src]' => '',
-      'seckit_xss[csp][script-src]'  => '',
-      'seckit_xss[csp][object-src]'  => '',
-      'seckit_xss[csp][img-src]'     => '',
-      'seckit_xss[csp][media-src]'   => '',
-      'seckit_xss[csp][style-src]'   => '',
-      'seckit_xss[csp][frame-src]'   => '',
-      'seckit_xss[csp][child-src]'   => '',
-      'seckit_xss[csp][font-src]'    => '',
-      'seckit_xss[csp][connect-src]' => '',
-      'seckit_xss[csp][report-uri]'  => '',
-      'seckit_xss[csp][policy-uri]'  => '',
+      'seckit_xss[csp][checkbox]'        => TRUE,
+      'seckit_xss[csp][default-src]'     => '',
+      'seckit_xss[csp][script-src]'      => '',
+      'seckit_xss[csp][object-src]'      => '',
+      'seckit_xss[csp][img-src]'         => '',
+      'seckit_xss[csp][media-src]'       => '',
+      'seckit_xss[csp][style-src]'       => '',
+      'seckit_xss[csp][frame-src]'       => '',
+      'seckit_xss[csp][frame-ancestors]' => '',
+      'seckit_xss[csp][child-src]'       => '',
+      'seckit_xss[csp][font-src]'        => '',
+      'seckit_xss[csp][connect-src]'     => '',
+      'seckit_xss[csp][report-uri]'      => '',
+      'seckit_xss[csp][policy-uri]'      => '',
     );
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
     $expected = "default-src 'self'; report-uri " . base_path() . SECKIT_CSP_REPORT_URL;

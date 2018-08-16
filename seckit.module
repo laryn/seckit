@@ -239,6 +239,7 @@ function _seckit_csp() {
   $csp_media_src   = $options['media-src'];
   $csp_style_src   = $options['style-src'];
   $csp_frame_src   = $options['frame-src'];
+  $csp_frame_ances = $options['frame-ancestors'];
   $csp_child_src   = $options['child-src'];
   $csp_font_src    = $options['font-src'];
   $csp_connect_src = $options['connect-src'];
@@ -274,6 +275,9 @@ function _seckit_csp() {
     }
     if ($csp_frame_src) {
       $directives[] = "frame-src $csp_frame_src";
+    }
+    if ($csp_frame_ances) {
+      $directives[] = "frame-ancestors $csp_frame_ances";
     }
     if ($csp_child_src) {
       $directives[] = "child-src $csp_child_src";
@@ -705,6 +709,7 @@ function _seckit_get_options_defaults() {
       'img-src' => '',
       'media-src' => '',
       'frame-src' => '',
+      'frame-ancestors' => '',
       'child-src' => '',
       'font-src' => '',
       'connect-src' => '',

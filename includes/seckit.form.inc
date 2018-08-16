@@ -153,6 +153,14 @@ function seckit_admin_form() {
     '#title' => 'frame-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
   );
+  // CSP frame-ancestors directive.
+  $form['seckit_xss']['csp']['frame-ancestors'] = array(
+    '#type' => 'textfield',
+    '#maxlength' => 1024,
+    '#default_value' => $options['seckit_xss']['csp']['frame-ancestors'],
+    '#title' => 'frame-ancestors',
+    '#description' => t('Specify trustworthy hosts which are allowed to embed this site\'s resources via &lt;iframe&gt;, &lt;frame&gt;, &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements.'),
+  );
   // CSP child-src directive
   $form['seckit_xss']['csp']['child-src'] = array(
     '#type' => 'textfield',
