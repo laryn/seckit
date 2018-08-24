@@ -513,7 +513,7 @@ function _seckit_origin() {
   // Allow requests from whitelisted Origins.
   global $base_root;
   $options = _seckit_get_options();
-  $whitelist = explode(',', $options['seckit_csrf']['origin_whitelist']);
+  $whitelist = $options['seckit_csrf']['origin_whitelist'];
   $whitelist[] = $base_root; // default origin is always allowed
   if (in_array($origin, $whitelist, TRUE)) {
     return;
@@ -695,11 +695,17 @@ function _seckit_hsts() {
 }
 
 /**
- * Converts a multi-line configuration option to an array.
- * Sanitises by trimming whitespace, and filtering empty options.
+ * Converts a multi-line (or otherwise delimited) string to an array of
+ * strings. Sanitises each value by trimming whitespace, and filters empty
+ * values from the array.
+ *
+ * @param string $text
+ *   String of delimited values.
+ * @param string $delimiter
+ *   Value delimiter. Defaults to newline for handling multi-line strings.
  */
-function _seckit_explode_value($string) {
-  $values = explode("\n", $string);
+function _seckit_explode_value($text, $delimiter = "\n") {
+  $values = explode($delimiter, $text);
   return array_values(array_filter(array_map('trim', $values)));
 }
 
@@ -847,6 +853,10 @@ function _seckit_get_options($reset = FALSE, $alter = TRUE) {
   // Convert ['seckit_clickjacking']['x_frame_allow_from'] to an array.
   $x_frame_allow_from =& $options['seckit_clickjacking']['x_frame_allow_from'];
   $x_frame_allow_from = _seckit_explode_value($x_frame_allow_from);
+
+  // Convert $options['seckit_csrf']['origin_whitelist'] to an array.
+  $whitelist =& $options['seckit_csrf']['origin_whitelist'];
+  $whitelist = _seckit_explode_value($whitelist, ',');
 
   // Process alterations and return.
   if ($alter) {

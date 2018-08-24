@@ -245,6 +245,22 @@ class SecKitTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Tests HTTP Origin allows requests from the specified source, with multiple
+   * values in the whitelist.
+   */
+  public function testOriginAllowsSpecifiedSourceMultiWhitelist() {
+    $form = array(
+      'seckit_csrf[origin]' => TRUE,
+      'seckit_csrf[origin_whitelist]' => 'http://www.example.com, https://www.example.com, https://example.com:8080',
+    );
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'),
+      array(), array('Origin: https://www.example.com'));
+    $this->assertResponse(200,
+      t('Whitelisted request is allowed.'));
+  }
+
+  /**
    * Tests HTTP Origin denies request.
    */
   public function testOriginDeny() {

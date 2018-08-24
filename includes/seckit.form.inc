@@ -276,7 +276,7 @@ function seckit_admin_form() {
   $form['seckit_csrf']['origin_whitelist'] = array(
     '#type' => 'textfield',
     '#title' => t('Allow requests from'),
-    '#default_value' => $options['seckit_csrf']['origin_whitelist'],
+    '#default_value' => implode(", ", $options['seckit_csrf']['origin_whitelist']),
     '#size' => 90,
     '#maxlength' => 255,
     '#description' => t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
