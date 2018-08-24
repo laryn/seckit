@@ -232,22 +232,22 @@ function _seckit_form_alter_login_form(&$form, &$form_state) {
  */
 function _seckit_csp() {
   // get default/set options
-  $options         = _seckit_get_options();
-  $options         = $options['seckit_xss']['csp'];
-  $csp_report_only = $options['report-only'];
-  $csp_default_src = $options['default-src'];
-  $csp_script_src  = $options['script-src'];
-  $csp_object_src  = $options['object-src'];
-  $csp_img_src     = $options['img-src'];
-  $csp_media_src   = $options['media-src'];
-  $csp_style_src   = $options['style-src'];
-  $csp_frame_src   = $options['frame-src'];
-  $csp_frame_ances = $options['frame-ancestors'];
-  $csp_child_src   = $options['child-src'];
-  $csp_font_src    = $options['font-src'];
-  $csp_connect_src = $options['connect-src'];
-  $csp_report_uri  = $options['report-uri'];
-  $csp_policy_uri  = $options['policy-uri'];
+  $options             = _seckit_get_options();
+  $options             = $options['seckit_xss']['csp'];
+  $csp_report_only     = $options['report-only'];
+  $csp_default_src     = $options['default-src'];
+  $csp_script_src      = $options['script-src'];
+  $csp_object_src      = $options['object-src'];
+  $csp_img_src         = $options['img-src'];
+  $csp_media_src       = $options['media-src'];
+  $csp_style_src       = $options['style-src'];
+  $csp_frame_src       = $options['frame-src'];
+  $csp_frame_ancestors = $options['frame-ancestors'];
+  $csp_child_src       = $options['child-src'];
+  $csp_font_src        = $options['font-src'];
+  $csp_connect_src     = $options['connect-src'];
+  $csp_report_uri      = $options['report-uri'];
+  $csp_policy_uri      = $options['policy-uri'];
 
   // prepare directives
   $directives = array();
@@ -279,8 +279,8 @@ function _seckit_csp() {
     if ($csp_frame_src) {
       $directives[] = "frame-src $csp_frame_src";
     }
-    if ($csp_frame_ances) {
-      $directives[] = "frame-ancestors $csp_frame_ances";
+    if ($csp_frame_ancestors) {
+      $directives[] = "frame-ancestors $csp_frame_ancestors";
     }
     if ($csp_child_src) {
       $directives[] = "child-src $csp_child_src";
