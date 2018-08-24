@@ -292,7 +292,7 @@ function _seckit_csp() {
       $directives[] = "connect-src $csp_connect_src";
     }
     if ($csp_report_uri) {
-      $directives[] = "report-uri " . base_path() . $csp_report_uri;
+      $directives[] = "report-uri " . url($csp_report_uri);
     }
     // merge directives
     $directives = implode('; ', $directives);

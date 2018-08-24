@@ -191,7 +191,7 @@ function seckit_admin_form() {
     '#maxlength'=> 1024,
     '#default_value' => $options['seckit_xss']['csp']['report-uri'],
     '#title' => 'report-uri',
-    '#description' => t('Specify a URL (relative to the Drupal root) to which user-agents will report CSP violations. Use the default value of <code>@csp_report_url</code> (which logs the report data in watchdog), unless you have set up an alternative handler for these reports.', array('@csp_report_url' => SECKIT_CSP_REPORT_URL)),
+    '#description' => t('Specify a URL (relative to the Drupal root or absolute) to which user-agents will report CSP violations. Use the default value of <code>@csp_report_url</code> (which logs the report data in watchdog), unless you have set up an alternative handler for these reports.', array('@csp_report_url' => SECKIT_CSP_REPORT_URL)),
   );
   // CSP policy-uri directive
   $form['seckit_xss']['csp']['policy-uri'] = array(
@@ -673,6 +673,13 @@ function seckit_admin_form() {
  * Validates form data.
  */
 function seckit_admin_form_validate($form, &$form_state) {
+  // Check validity of CSP report-uri when CSP headers are on.
+  $is_csp_header_enabled = $form_state['values']['seckit_xss']['csp']['checkbox'];
+  $report_uri = $form_state['values']['seckit_xss']['csp']['report-uri'];
+  // Ignore empty report-uri as it will be filled in by the default later.
+  if ($is_csp_header_enabled and !empty($report_uri) and !drupal_valid_path($report_uri)) {
+    form_error($form['seckit_xss']['csp']['report-uri'], t('Non-existent path for report-uri given: %uri', array('%uri' => $report_uri)));
+  }
   // if From-Origin is enabled, it should be explicitly set
   $from_origin_enable = $form_state['values']['seckit_various']['from_origin'];
   $from_origin_destination = $form_state['values']['seckit_various']['from_origin_destination'];

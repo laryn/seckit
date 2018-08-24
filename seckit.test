@@ -111,6 +111,126 @@ class SecKitTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Tests for report-uri directive of Content Security Policy.
+   *
+   * report-uri can be relative to Drupal's base URI or it can be an absolute
+   * URI.
+   */
+  public function testCSPReportUriDirectiveOnly() {
+
+    // report-uri is report-csp-violation
+    $base_form = array(
+      'seckit_xss[csp][checkbox]'    => TRUE,
+      'seckit_xss[csp][default-src]' => '*',
+      'seckit_xss[csp][script-src]'  => '*',
+      'seckit_xss[csp][object-src]'  => '*',
+      'seckit_xss[csp][style-src]'   => '*',
+      'seckit_xss[csp][img-src]'     => '*',
+      'seckit_xss[csp][media-src]'   => '*',
+      'seckit_xss[csp][frame-src]'   => '*',
+      'seckit_xss[csp][font-src]'    => '*',
+      'seckit_xss[csp][connect-src]' => '*',
+      'seckit_xss[csp][report-uri]'  => SECKIT_CSP_REPORT_URL,
+    );
+
+    // First test.  No report-uri has been specified.
+    $form_for_test0 = $base_form;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test0, t('Save configuration'));
+
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; font-src *; connect-src *; report-uri ' . url(SECKIT_CSP_REPORT_URL);
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has default report-uri directive (Official).'));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has default report-uri directive (Mozilla and IE10).'));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has default report-uri directive (Chrome and Safari).'));
+
+    // Second test.  A valid internal path "node" has been specified as the
+    // report-uri.
+    $form_for_test1 = $base_form;
+    $report_uri_for_test1 = 'node';
+    $form_for_test1['seckit_xss[csp][report-uri]'] = $report_uri_for_test1;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test1, t('Save configuration'));
+
+    $expected_report_uri_for_test1 = url($report_uri_for_test1);
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test1;
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has %uri as report-uri directive (Official).', array(
+        '%uri' => $expected_report_uri_for_test1)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has %uri as report-uri directive (Mozilla and IE10).', array(
+        '%uri' => $expected_report_uri_for_test1)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has %uri as report-uri directive (Chrome and Safari).', array(
+        '%uri' => $expected_report_uri_for_test1)));
+
+    // Third test.  A non-existent internal path "foo/bar/report-csp-violation"
+    // has been specified as the report-uri.
+    $form_for_test2       = $base_form;
+    $report_uri_for_test2 = 'foo/bar/report-csp-violation';
+    $form_for_test2['seckit_xss[csp][report-uri]'] = $report_uri_for_test2;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test2, t('Save configuration'));
+
+    $expected_err_msg = t('Non-existent path for report-uri given: %uri', array(
+      '%uri' => $report_uri_for_test2));
+    $this->assertRaw($expected_err_msg, 'Non-existent report-uri path should be rejected.');
+
+    // Fourth test.  report-uri is https://report-uri.io/report/DrupalSeckitTest
+    $form_for_test3       = $base_form;
+    $report_uri_for_test3 = 'https://report-uri.io/report/DrupalSeckitTest';
+    $form_for_test3['seckit_xss[csp][report-uri]'] = $report_uri_for_test3;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test3, t('Save configuration'));
+
+    $expected_report_uri_for_test3 = $report_uri_for_test3;
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test3;
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has %uri as report-uri directive (Official).', array(
+        '%uri' => $expected_report_uri_for_test3)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has %uri as report-uri directive (Mozilla and IE10).', array(
+        '%uri' => $expected_report_uri_for_test3)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has %uri as report-uri directive (Chrome and Safari).', array(
+        '%uri' => $expected_report_uri_for_test3)));
+
+    // Another test.  report-uri is http://report-uri.io/report/DrupalSeckitTest
+    $form_for_test4       = $base_form;
+    $report_uri_for_test4 = 'http://report-uri.io/report/DrupalSeckitTest';
+    $form_for_test4['seckit_xss[csp][report-uri]'] = $report_uri_for_test4;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test4, t('Save configuration'));
+
+    $expected_report_uri_for_test4 = $report_uri_for_test4;
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test4;
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has %uri as report-uri directive (Official).', array(
+        '%uri' => $expected_report_uri_for_test4)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has %uri as report-uri directive (Mozilla and IE10).', array(
+        '%uri' => $expected_report_uri_for_test4)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has %uri as report-uri directive (Chrome and Safari).', array(
+        '%uri' => $expected_report_uri_for_test4)));
+
+    // Last test.  report-uri is //report-uri.io/report/DrupalSeckitTest
+    $form_for_test5       = $base_form;
+    $report_uri_for_test5 = '//report-uri.io/report/DrupalSeckitTest';
+    $form_for_test5['seckit_xss[csp][report-uri]'] = $report_uri_for_test5;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test5, t('Save configuration'));
+
+    $expected_report_uri_for_test5 = $report_uri_for_test5;
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test5;
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has %uri as report-uri directive (Official).', array(
+        '%uri' => $expected_report_uri_for_test5)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has %uri as report-uri directive (Mozilla and IE10).', array(
+        '%uri' => $expected_report_uri_for_test5)));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has %uri as report-uri directive (Chrome and Safari).', array(
+        '%uri' => $expected_report_uri_for_test5)));
+  }
+
+  /**
    * Tests Content Security Policy with all directives empty.
    * In this case, we should revert back to default values.
    */
