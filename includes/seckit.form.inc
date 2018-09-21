@@ -284,17 +284,17 @@ function seckit_admin_form() {
   // options for X-Frame-Options
   $x_frame_options = array(
     SECKIT_X_FRAME_DISABLE => t('Disabled'),
-    SECKIT_X_FRAME_SAMEORIGIN => 'SameOrigin',
-    SECKIT_X_FRAME_DENY => 'Deny',
-    SECKIT_X_FRAME_ALLOW_FROM => 'Allow-From',
+    SECKIT_X_FRAME_SAMEORIGIN => 'SAMEORIGIN',
+    SECKIT_X_FRAME_DENY => 'DENY',
+    SECKIT_X_FRAME_ALLOW_FROM => 'ALLOW-FROM',
   );
   // configure X-Frame-Options
   $args = array(
     '!values' => theme('item_list', array('items' => array(
                    'Disabled - turn off X-Frame-Options',
-                   'SameOrigin - browser allows all the attempts of framing website within its domain. Enabled by default',
-                   'Deny - browser rejects any attempt of framing website',
-                   'Allow-From - browser allows framing website only from specified source',
+                   'SAMEORIGIN - browser allows all the attempts of framing website within its domain. Enabled by default',
+                   'DENY - browser rejects any attempt of framing website',
+                   'ALLOW-FROM - browser allows framing website only from specified source',
                  ))),
     '!msdn' => l(t('MSDN article'), 'http://blogs.msdn.com/b/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx'),
     '!spec' => l(t('specification'), 'http://tools.ietf.org/html/draft-ietf-websec-x-frame-options-01'),
@@ -312,12 +312,12 @@ function seckit_admin_form() {
     ),
   );
 
-  // Origin value for "Allow-From" option.
+  // Origin value for "ALLOW-FROM" option.
   $form['seckit_clickjacking']['x_frame_options']['x_frame_allow_from'] = array(
     '#type' => 'textarea',
-    '#title' => t('Allow-From'),
+    '#title' => t('ALLOW-FROM'),
     '#default_value' => implode("\n", $options['seckit_clickjacking']['x_frame_allow_from']),
-    '#description' => t('Origin URIs (as specified by RFC 6454) for the "X-Frame-Options: Allow-From" value. One per line. Example, http://domain.com'),
+    '#description' => t('Origin URIs (as specified by RFC 6454) for the "X-Frame-Options: ALLOW-FROM" value. One per line. Example, http://domain.com'),
     // Non-tree (we skip a parent).
     '#parents' => array(
       'seckit_clickjacking',
@@ -666,12 +666,12 @@ function seckit_admin_form_validate($form, &$form_state) {
   if (($from_origin_enable == 1) && (!$from_origin_destination)) {
     form_error($form['seckit_various']['from_origin_destination'], t('You have to set up trustworthy destination for From-Origin HTTP response header. Default is same.'));
   }
-  // if X-Frame-Options is set to Allow-From, it should be explicitly set
+  // if X-Frame-Options is set to ALLOW-FROM, it should be explicitly set
   $x_frame_value = $form_state['values']['seckit_clickjacking']['x_frame'];
   if ($x_frame_value == SECKIT_X_FRAME_ALLOW_FROM) {
     $x_frame_allow_from = $form_state['values']['seckit_clickjacking']['x_frame_allow_from'];
     if (!_seckit_explode_value($x_frame_allow_from)) {
-      form_error($form['seckit_clickjacking']['x_frame_allow_from'], t('You must specify a trusted Origin for the Allow-From value of the X-Frame-Options HTTP response header.'));
+      form_error($form['seckit_clickjacking']['x_frame_allow_from'], t('You must specify a trusted Origin for the ALLOW-FROM value of the X-Frame-Options HTTP response header.'));
     }
   }
   // if HTTP Strict Transport Security is enabled, max-age must be specified.

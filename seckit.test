@@ -385,34 +385,34 @@ class SecKitTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Tests set to SameOrigin X-Frame-Options HTTP response header.
+   * Tests set to SAMEORIGIN X-Frame-Options HTTP response header.
    */
   public function testXFrameOptionsIsSameOrigin() {
     $form['seckit_clickjacking[x_frame]'] = SECKIT_X_FRAME_SAMEORIGIN;
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $this->assertEqual('SameOrigin', $this->drupalGetHeader('X-Frame-Options'),
-      t('X-Frame-Options is set to SameOrigin.'));
+    $this->assertEqual('SAMEORIGIN', $this->drupalGetHeader('X-Frame-Options'),
+      t('X-Frame-Options is set to SAMEORIGIN.'));
   }
 
   /**
-   * Tests set to Deny X-Frame-Options HTTP response header.
+   * Tests set to DENY X-Frame-Options HTTP response header.
    */
   public function testXFrameOptionsIsDeny() {
     $form['seckit_clickjacking[x_frame]'] = SECKIT_X_FRAME_DENY;
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $this->assertEqual('Deny', $this->drupalGetHeader('X-Frame-Options'),
-      t('X-Frame-Options is set to Deny.'));
+    $this->assertEqual('DENY', $this->drupalGetHeader('X-Frame-Options'),
+      t('X-Frame-Options is set to DENY.'));
   }
 
   /**
-   * Tests set to Allow-From X-Frame-Options HTTP response header.
+   * Tests set to ALLOW-FROM X-Frame-Options HTTP response header.
    */
   public function testXFrameOptionsIsAllowFrom() {
     $form['seckit_clickjacking[x_frame]'] = SECKIT_X_FRAME_ALLOW_FROM;
     $form['seckit_clickjacking[x_frame_allow_from]'] = 'http://www.google.com';
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $this->assertEqual('Allow-From http://www.google.com', $this->drupalGetHeader('X-Frame-Options'),
-      t('X-Frame-Options is set to Allow-From.'));
+    $this->assertEqual('ALLOW-FROM http://www.google.com', $this->drupalGetHeader('X-Frame-Options'),
+      t('X-Frame-Options is set to ALLOW-FROM.'));
   }
 
   /**

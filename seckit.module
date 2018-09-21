@@ -12,9 +12,9 @@ define('SECKIT_X_XSS_0', 1); // set X-XSS-Protection HTTP header to 0
 define('SECKIT_X_XSS_1_BLOCK', 2); // set X-XSS-Protection HTTP header to 1; mode=block
 define('SECKIT_X_XSS_1', 3); // set X-XSS-Protection HTTP header to 1
 define('SECKIT_X_FRAME_DISABLE', 0); // disable X-Frame-Options HTTP header
-define('SECKIT_X_FRAME_SAMEORIGIN', 1); // set X-Frame-Options HTTP header to SameOrigin
-define('SECKIT_X_FRAME_DENY', 2); // set X-Frame-Options HTTP header to Deny
-define('SECKIT_X_FRAME_ALLOW_FROM', 3); // set X-Frame-Options HTTP header to Allow-From
+define('SECKIT_X_FRAME_SAMEORIGIN', 1); // set X-Frame-Options HTTP header to SAMEORIGIN
+define('SECKIT_X_FRAME_DENY', 2); // set X-Frame-Options HTTP header to DENY
+define('SECKIT_X_FRAME_ALLOW_FROM', 3); // set X-Frame-Options HTTP header to ALLOW-FROM
 define('SECKIT_CSP_REPORT_URL', 'report-csp-violation');
 
 /**
@@ -128,7 +128,7 @@ function seckit_init() {
 /**
  * Implements hook_boot().
  *
- * When multiple 'Allow-From' values are configured for X-Frame-Options,
+ * When multiple 'ALLOW-FROM' values are configured for X-Frame-Options,
  * we dynamically set the header so that it is correct even when pages are
  * served from the page cache.
  *
@@ -150,13 +150,13 @@ function seckit_boot() {
     $origin = array_pop($allowed);
   }
 
-  drupal_add_http_header('X-Frame-Options', "Allow-From $origin");
+  drupal_add_http_header('X-Frame-Options', "ALLOW-FROM $origin");
 }
 
 /**
  * Implements hook_module_implements_alter().
  *
- * The 'Allow-From' field of X-Frame-Options supports a single origin only.
+ * The 'ALLOW-FROM' field of X-Frame-Options supports a single origin only.
  * http://tools.ietf.org/html/rfc7034#section-2.3.2.3
  *
  * Consequently, when multiple values are configured we must resort to
@@ -547,11 +547,11 @@ function _seckit_origin() {
 function _seckit_x_frame($setting) {
   switch ($setting) {
     case SECKIT_X_FRAME_SAMEORIGIN:
-      drupal_add_http_header('X-Frame-Options', 'SameOrigin'); // set X-Frame-Options to SameOrigin
+      drupal_add_http_header('X-Frame-Options', 'SAMEORIGIN'); // set X-Frame-Options to SAMEORIGIN
       break;
 
     case SECKIT_X_FRAME_DENY:
-      drupal_add_http_header('X-Frame-Options', 'Deny'); // set X-Frame-Options to Deny
+      drupal_add_http_header('X-Frame-Options', 'DENY'); // set X-Frame-Options to DENY
       break;
 
     case SECKIT_X_FRAME_ALLOW_FROM:
@@ -559,7 +559,7 @@ function _seckit_x_frame($setting) {
       $allowed = $options['seckit_clickjacking']['x_frame_allow_from'];
       if (count($allowed) == 1) {
         $value = array_pop($allowed);
-        drupal_add_http_header('X-Frame-Options', "Allow-From $value");
+        drupal_add_http_header('X-Frame-Options', "ALLOW-FROM $value");
       }
       // If there were multiple values, then seckit_boot() took care of it.
       break;
