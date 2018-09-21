@@ -96,9 +96,6 @@ function seckit_init() {
   if ($options['seckit_xss']['x_xss']['select']) {
     _seckit_x_xss($options['seckit_xss']['x_xss']['select']);
   }
-  if ($options['seckit_xss']['x_content_type']['checkbox']) {
-    _seckit_x_content_type_options();
-  }
 
   // Always call this (regardless of the setting) since if it's disabled it may
   // be necessary to actively disable the Drupal core clickjacking defense.
@@ -460,13 +457,6 @@ function _seckit_x_xss($setting) {
 }
 
 /**
- * Sends X-Content-Type-Options HTTP response header.
- */
-function _seckit_x_content_type_options() {
-  drupal_add_http_header('X-Content-Type-Options', 'nosniff');
-}
-
-/**
  * Aborts HTTP request upon invalid 'Origin' HTTP request header.
  *
  * When included in an HTTP request, the Origin header indicates the origin(s)
@@ -740,10 +730,6 @@ function _seckit_get_options_defaults() {
     // X-XSS-Protection header.
     'x_xss' => array(
       'select' => SECKIT_X_XSS_DISABLE, // Disabled by default.
-    ),
-    // X-Content-Type-Options header.
-    'x_content_type' => array(
-      'checkbox' => 1, // Enabled by default.
     ),
   );
 

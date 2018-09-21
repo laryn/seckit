@@ -160,3 +160,13 @@ function seckit_update_7106() {
     variable_set('seckit_advanced', $seckit_advanced);
   }
 }
+
+/**
+ * Remove x_content_type from seckit_xss variable.
+ */
+function seckit_update_7107() {
+  $options = variable_get('seckit_xss');
+  unset($options['x_content_type']);
+  variable_del('seckit_xss');
+  variable_set('seckit_xss', $options);
+}
