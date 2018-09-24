@@ -165,8 +165,12 @@ function seckit_update_7106() {
  * Remove x_content_type from seckit_xss variable.
  */
 function seckit_update_7107() {
-  $options = variable_get('seckit_xss');
-  unset($options['x_content_type']);
-  variable_del('seckit_xss');
-  variable_set('seckit_xss', $options);
+  // Load variables directly from the db without any $conf overrides.
+  $variables = variable_initialize(array());
+  if (isset($variables['seckit_xss']['x_content_type'])) {
+    $seckit_xss = $variables['seckit_xss'];
+    unset($seckit_xss['x_content_type']);
+    variable_set('seckit_xss', $seckit_xss);
+    return t('Removed x_content_type from the seckit_xss variable.');
+  }
 }
