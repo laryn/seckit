@@ -79,6 +79,11 @@ function seckit_menu() {
  * Implements hook_init().
  */
 function seckit_init() {
+  // Do nothing for command-line requests.
+  if (drupal_is_cli()) {
+    return;
+  }
+
   // get default/set options
   $options = _seckit_get_options();
 
@@ -482,12 +487,6 @@ function _seckit_origin() {
   // Allow requests without an 'Origin' header, or with a 'null' origin.
   $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
   if (!$origin || $origin === 'null') {
-    return;
-  }
-  // Allow command-line requests.
-  // TODO: Should this test be in seckit_init() ?
-  // (i.e. Should this module do *anything* in the case of cli requests?)
-  if (drupal_is_cli()) {
     return;
   }
   // Allow GET and HEAD requests.
