@@ -42,6 +42,7 @@ function seckit_admin_form() {
   // fieldset for Content Security Policy (CSP)
   $args = array(
     '!wiki' => l(t('Mozilla Wiki'), 'https://wiki.mozilla.org/Security/CSP'),
+    '!caniuse' => l(t('Can I use'), 'https://caniuse.com/#feat=contentsecuritypolicy'),
   );
   $form['seckit_xss']['csp'] = array(
     '#type' => 'fieldset',
@@ -57,7 +58,29 @@ function seckit_admin_form() {
     '#default_value' => $options['seckit_xss']['csp']['checkbox'],
     '#title' => t('Enable Content Security Policy'),
     '#return_value' => 1,
-    '#description' => t('Send Content-Security-Policy (official), X-Content-Security-Policy (supported by Mozilla Firefox and IE10) and X-WebKit-CSP (supported by Google Chrome and Safari) HTTP response headers with the list of Content Security Policy directives. <br/>Violation reports are ignored when this option is disabled.'),
+    '#description' => t('Send Content-Security-Policy HTTP response headers with the list of Content Security Policy directives. <br/>Violation reports are ignored when this option is disabled.'),
+  );
+  $form['seckit_xss']['csp']['vendor-prefix'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Vendor Prefixed CSP headers'),
+    '#collapsible' => TRUE,
+    '#tree' => TRUE,
+    '#collapsed' => !($options['seckit_xss']['csp']['vendor-prefix']['x'] || $options['seckit_xss']['csp']['vendor-prefix']['webkit']),
+    '#description' => t('Support for legacy vendor-prefixed CSP headers. Details at !caniuse.', $args),
+  );
+  $form['seckit_xss']['csp']['vendor-prefix']['x'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => $options['seckit_xss']['csp']['vendor-prefix']['x'],
+    '#title' => t('Send X-Content-Security-Policy HTTP response header'),
+    '#return_value' => 1,
+    '#description' => t('Send vendor-prefixed X-Content-Security-Policy HTTP response headers with the list of Content Security Policy directives.'),
+  );
+  $form['seckit_xss']['csp']['vendor-prefix']['webkit'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => $options['seckit_xss']['csp']['vendor-prefix']['webkit'],
+    '#title' => t('Send X-WebKit-CSP HTTP response header'),
+    '#return_value' => 1,
+    '#description' => t('Send vendor-prefixed X-WebKit-CSP HTTP response headers with the list of Content Security Policy directives.'),
   );
   // CSP report-only mode
   $form['seckit_xss']['csp']['report-only'] = array(

@@ -234,22 +234,24 @@ function _seckit_form_alter_login_form(&$form, &$form_state) {
  */
 function _seckit_csp() {
   // get default/set options
-  $options             = _seckit_get_options();
-  $options             = $options['seckit_xss']['csp'];
-  $csp_report_only     = $options['report-only'];
-  $csp_default_src     = $options['default-src'];
-  $csp_script_src      = $options['script-src'];
-  $csp_object_src      = $options['object-src'];
-  $csp_img_src         = $options['img-src'];
-  $csp_media_src       = $options['media-src'];
-  $csp_style_src       = $options['style-src'];
-  $csp_frame_src       = $options['frame-src'];
-  $csp_frame_ancestors = $options['frame-ancestors'];
-  $csp_child_src       = $options['child-src'];
-  $csp_font_src        = $options['font-src'];
-  $csp_connect_src     = $options['connect-src'];
-  $csp_report_uri      = $options['report-uri'];
-  $csp_policy_uri      = $options['policy-uri'];
+  $options                  = _seckit_get_options();
+  $options                  = $options['seckit_xss']['csp'];
+  $csp_vendor_prefix_x      = $options['vendor-prefix']['x'];
+  $csp_vendor_prefix_webkit = $options['vendor-prefix']['webkit'];
+  $csp_report_only          = $options['report-only'];
+  $csp_default_src          = $options['default-src'];
+  $csp_script_src           = $options['script-src'];
+  $csp_object_src           = $options['object-src'];
+  $csp_img_src              = $options['img-src'];
+  $csp_media_src            = $options['media-src'];
+  $csp_style_src            = $options['style-src'];
+  $csp_frame_src            = $options['frame-src'];
+  $csp_frame_ancestors      = $options['frame-ancestors'];
+  $csp_child_src            = $options['child-src'];
+  $csp_font_src             = $options['font-src'];
+  $csp_connect_src          = $options['connect-src'];
+  $csp_report_uri           = $options['report-uri'];
+  $csp_policy_uri           = $options['policy-uri'];
 
   // prepare directives
   $directives = array();
@@ -304,14 +306,22 @@ function _seckit_csp() {
   if ($directives) {
     if ($csp_report_only) {
       // use report-only mode
-      drupal_add_http_header('Content-Security-Policy-Report-Only', $directives); // official name
-      drupal_add_http_header('X-Content-Security-Policy-Report-Only', $directives); // Firefox and IE10
-      drupal_add_http_header('X-WebKit-CSP-Report-Only', $directives); // Chrome and Safari
+      drupal_add_http_header('Content-Security-Policy-Report-Only', $directives);
+      if ($csp_vendor_prefix_x) {
+        drupal_add_http_header('X-Content-Security-Policy-Report-Only', $directives);
+      }
+      if ($csp_vendor_prefix_webkit) {
+        drupal_add_http_header('X-WebKit-CSP-Report-Only', $directives);
+      }
     }
     else {
-      drupal_add_http_header('Content-Security-Policy', $directives); // official name
-      drupal_add_http_header('X-Content-Security-Policy', $directives); // Firefox and IE10
-      drupal_add_http_header('X-WebKit-CSP', $directives); // Chrome and Safari
+      drupal_add_http_header('Content-Security-Policy', $directives);
+      if ($csp_vendor_prefix_x) {
+        drupal_add_http_header('X-Content-Security-Policy', $directives);
+      }
+      if ($csp_vendor_prefix_webkit) {
+        drupal_add_http_header('X-WebKit-CSP', $directives);
+      }
     }
   }
 }
@@ -711,6 +721,10 @@ function _seckit_get_options_defaults() {
     // Content Security Policy (CSP)
     'csp' => array(
       'checkbox' => 0, // CSP disabled by default
+      'vendor-prefix' => array(
+        'x' => 0,
+        'webkit' => 0,
+      ),
       'report-only' => 0,
       'default-src' => "'self'",
       'script-src' => '',
