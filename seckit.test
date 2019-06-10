@@ -31,6 +31,7 @@ class SecKitTestCase extends DrupalWebTestCase {
    * @see DrupalWebTestCase::setUp()
    */
   public function setUp() {
+    variable_set('clean_url', 1);
     parent::setUp('seckit');
     $this->admin = $this->drupalCreateUser(array('administer seckit'));
     $this->drupalLogin($this->admin);

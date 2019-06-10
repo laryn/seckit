@@ -494,6 +494,7 @@ function _seckit_x_xss($setting) {
  * http://tools.ietf.org/html/draft-abarth-origin-09
  */
 function _seckit_origin() {
+
   // Allow requests without an 'Origin' header, or with a 'null' origin.
   $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
   if (!$origin || $origin === 'null') {
@@ -506,7 +507,10 @@ function _seckit_origin() {
   }
   // Allow requests from localhost.
   if (in_array(ip_address(), array('localhost', '127.0.0.1', '::1'), TRUE)) {
-    return;
+    // Unless this is a test.
+    if (!drupal_valid_test_ua()) {
+      return;
+    }
   }
 
   // Allow requests from whitelisted Origins.
