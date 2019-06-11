@@ -557,4 +557,27 @@ class SecKitTestCase extends DrupalWebTestCase {
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->assertEqual('no-referrer-when-downgrade', $this->drupalGetHeader('Referrer-Policy'), t('Referrer-Policy is enabled and set to no-referrer-when-downgrade.'));
   }
+
+  /**
+   * Tests disabled feature-policy.
+   */
+  public function testDisabledFeaturePolicy() {
+    $form['seckit_fp[feature_policy]'] = FALSE;
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $this->assertFalse($this->drupalGetHeader('Feature-Policy'), t('Feature-Policy is disabled.'));
+  }
+
+  /**
+   * Tests enabled feature-policy.
+   */
+  public function testEnabledFeaturePolicy() {
+    $form = array(
+      'seckit_fp[feature_policy]' => TRUE,
+      'seckit_fp[feature_policy_policy]' => "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'",
+    );
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $expected = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
+    $this->assertEqual($expected, $this->drupalGetHeader('Feature-Policy'), t('The feature-policy header is correctly sent.'));
+    debug(array('expected' => $expected, 'received' => $this->drupalGetHeader('Feature-Policy'), 'headers' => $this->drupalGetHeaders()));
+  }
 }

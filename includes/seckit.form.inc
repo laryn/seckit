@@ -497,6 +497,34 @@ function seckit_admin_form() {
     '#default_value' => $options['seckit_ct']['enforce'],
   );
 
+  // main fieldset for feature_policy
+  $args = array(
+    '!Google' => l(t("Google's developer documentation"), 'https://developers.google.com/web/updates/2018/06/feature-policy'),
+  );
+  $form['seckit_fp'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Feature policy'),
+    '#collapsible' => TRUE,
+    '#collapsed' => (!$options['seckit_fp']['feature_policy']),
+    '#tree' => TRUE,
+    '#description' => t("Allows configuration of the Feature-Policy header to selectively enable, disable, and modify the behavior of certain APIs and web features in the browser. See !Google.", $args)
+  );
+
+  // enable/disable Feature Policy
+  $form['seckit_fp']['feature_policy'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Feature policy'),
+    '#default_value' => $options['seckit_fp']['feature_policy'],
+    '#description' => t(' Enable the Feature-Policy header.'),
+  );
+  // From-Origin destination
+  $form['seckit_fp']['feature_policy_policy'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Policy'),
+    '#default_value' => $options['seckit_fp']['feature_policy_policy'],
+    '#description' => t('Specify the policy to be sent out with Feature-Policy headers.'),
+  );
+
   // main fieldset for various
   $form['seckit_various'] = array(
     '#type' => 'fieldset',

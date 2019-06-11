@@ -121,6 +121,9 @@ function seckit_init() {
   if ($options['seckit_various']['referrer_policy']) {
     _seckit_referrer_policy();
   }
+  if ($options['seckit_fp']['feature_policy']) {
+    _seckit_fp();
+  }
 
   // load jQuery listener
   if ($_GET['q'] == 'admin/config/system/seckit') {
@@ -665,6 +668,18 @@ function _seckit_from_origin() {
 }
 
 /**
+ * Sends Feature-Policy HTTP response header.
+ *
+ * Implementation is based on specification draft
+ * available at https://developers.google.com/web/updates/2018/06/feature-policy.
+ */
+function _seckit_fp() {
+  $options = _seckit_get_options();
+  $value = $options['seckit_fp']['feature_policy_policy'];
+  drupal_add_http_header('Feature-Policy', $value);
+}
+
+/**
  * Sends Referrer-Policy HTTP response header.
  *
  * Implementation is based on specification draft
@@ -784,6 +799,12 @@ function _seckit_get_options_defaults() {
     'max_age' => 1000,
     'report-uri' => '',
     'enforce' => 0,
+  );
+
+  // Defaults for variable_get('seckit_fp');
+  $defaults['seckit_fp'] = array(
+    'feature_policy' => 0,
+    'feature_policy_policy' => '',
   );
 
   // Defaults for variable_get('seckit_various');
