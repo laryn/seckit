@@ -71,9 +71,10 @@ class SecKitTestCase extends DrupalWebTestCase {
       'seckit_xss[csp][font-src]'              => '*',
       'seckit_xss[csp][connect-src]'           => '*',
       'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
+      'seckit_xss[csp][upgrade-req]'           => TRUE,
     );
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL;
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL .'; upgrade-insecure-requests';
     $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has all the directves.'));
     $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
@@ -319,6 +320,19 @@ class SecKitTestCase extends DrupalWebTestCase {
       t('Vendor prefixed X-Content-Security-Policy header is disabled.'));
     $this->assertFalse($this->drupalGetHeader('X-WebKit-CSP'),
       t('Vendor prefixed X-Webkit-CSP header is disabled.'));
+  }
+
+  /**
+   * Tests Content Security Policy with upgrade-insecure-requests directive.
+   * In this case, only upgrade-insecure-requests directive should be present.
+   */
+  public function testCSPUpgradeInsecureRequestsDirectiveOnly() {
+    $form['seckit_xss[csp][checkbox]'] = TRUE;
+    $form['seckit_xss[csp][upgrade-req]'] = TRUE;
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $expected = "default-src 'self'; report-uri " . base_path() . SECKIT_CSP_REPORT_URL . '; upgrade-insecure-requests';
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has defaults plus upgrade-insecure-requests.'));
   }
 
   /**

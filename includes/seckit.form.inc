@@ -82,6 +82,14 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#description' => t('Send vendor-prefixed X-WebKit-CSP HTTP response headers with the list of Content Security Policy directives.'),
   );
+  // CSP Upgrade Insecure Requests
+  $form['seckit_xss']['csp']['upgrade-req'] = array(
+    '#type' => 'checkbox',
+      '#default_value' => $options['seckit_xss']['csp']['upgrade-req'],
+      '#title' => t('Enable Upgrade Insecure Requests'),
+      '#return_value' => 1,
+      '#description' => t('Upgrade Insecure Requests (upgrade-insecure-requests) instructs user agents to rewrite URL schemes, changing HTTP to HTTPS. This directive is used to protect your visitors from insecure content or for websites with large numbers of old URL\'s that need to be rewritten.'),
+   );
   // CSP report-only mode
   $form['seckit_xss']['csp']['report-only'] = array(
     '#type' => 'checkbox',

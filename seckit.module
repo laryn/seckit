@@ -252,6 +252,7 @@ function _seckit_csp() {
   $csp_connect_src          = $options['connect-src'];
   $csp_report_uri           = $options['report-uri'];
   $csp_policy_uri           = $options['policy-uri'];
+  $csp_upgrade_req          = $options['upgrade-req'];
 
   // prepare directives
   $directives = array();
@@ -297,6 +298,9 @@ function _seckit_csp() {
     }
     if ($csp_report_uri) {
       $directives[] = "report-uri " . url($csp_report_uri);
+    }
+    if ($csp_upgrade_req) {
+      $directives[] = 'upgrade-insecure-requests';
     }
     // merge directives
     $directives = implode('; ', $directives);
@@ -743,6 +747,7 @@ function _seckit_get_options_defaults() {
       'connect-src' => '',
       'report-uri' => SECKIT_CSP_REPORT_URL,
       'policy-uri' => '',
+      'upgrade-req' => '',
     ),
     // X-XSS-Protection header.
     'x_xss' => array(
