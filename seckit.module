@@ -236,98 +236,85 @@ function _seckit_form_alter_login_form(&$form, &$form_state) {
  * Based on specification available at http://www.w3.org/TR/CSP/
  */
 function _seckit_csp() {
-  // get default/set options
-  $options                  = _seckit_get_options();
-  $options                  = $options['seckit_xss']['csp'];
-  $csp_vendor_prefix_x      = $options['vendor-prefix']['x'];
-  $csp_vendor_prefix_webkit = $options['vendor-prefix']['webkit'];
-  $csp_report_only          = $options['report-only'];
-  $csp_default_src          = $options['default-src'];
-  $csp_script_src           = $options['script-src'];
-  $csp_object_src           = $options['object-src'];
-  $csp_img_src              = $options['img-src'];
-  $csp_media_src            = $options['media-src'];
-  $csp_style_src            = $options['style-src'];
-  $csp_frame_src            = $options['frame-src'];
-  $csp_frame_ancestors      = $options['frame-ancestors'];
-  $csp_child_src            = $options['child-src'];
-  $csp_font_src             = $options['font-src'];
-  $csp_connect_src          = $options['connect-src'];
-  $csp_report_uri           = $options['report-uri'];
-  $csp_policy_uri           = $options['policy-uri'];
-  $csp_upgrade_req          = $options['upgrade-req'];
-
-  // prepare directives
+  $options = _seckit_get_options();
+  $options = $options['seckit_xss']['csp'];
   $directives = array();
 
-  // if policy-uri is declared, no other directives are permitted.
-  if ($csp_policy_uri) {
-    $directives = "policy-uri " . base_path() . $csp_policy_uri;
-  }
-  // otherwise prepare directives
-  else {
-    if ($csp_default_src) {
-      $directives[] = "default-src $csp_default_src";
+  // Process the options (special-cases and CSP directives).  All of
+  // the special cases will be present in $options, with the default
+  // values being defined by _seckit_get_options_defaults(), so we can
+  // trust that every case will be executed.
+  foreach ($options as $option_key => $option_value) {
+    switch ($option_key) {
+      case 'checkbox':
+        // This option only determined whether this function was called.
+        break;
+
+      case 'report-only':
+        $csp_report_only = $option_value;
+        break;
+
+      case 'vendor-prefix':
+        $csp_vendor_prefix_x = $option_value['x'];
+        $csp_vendor_prefix_webkit = $option_value['webkit'];
+        break;
+
+      case 'policy-uri':
+        if ($option_value) {
+          $csp_policy_uri = base_path() . $option_value;
+          $csp_policy_uri_directive = $option_key . ' ' . $csp_policy_uri;
+        }
+        break;
+
+      case 'report-uri':
+        if ($option_value) {
+          $directives[] = $option_key . ' ' . url($option_value);
+        }
+        break;
+
+      case 'upgrade-req':
+        if ($option_value) {
+          $directives[] = 'upgrade-insecure-requests';
+        }
+        break;
+
+      default:
+        // All other entries represent verbatim CSP directives.
+        // Custom directives can be added via hook_seckit_options_alter().
+        if ($option_value) {
+          $directives[] = $option_key . ' ' . $option_value;
+        }
+        break;
     }
-    if ($csp_script_src) {
-      $directives[] = "script-src $csp_script_src";
-    }
-    if ($csp_object_src) {
-      $directives[] = "object-src $csp_object_src";
-    }
-    if ($csp_style_src) {
-      $directives[] = "style-src $csp_style_src";
-    }
-    if ($csp_img_src) {
-      $directives[] = "img-src $csp_img_src";
-    }
-    if ($csp_media_src) {
-      $directives[] = "media-src $csp_media_src";
-    }
-    if ($csp_frame_src) {
-      $directives[] = "frame-src $csp_frame_src";
-    }
-    if ($csp_frame_ancestors) {
-      $directives[] = "frame-ancestors $csp_frame_ancestors";
-    }
-    if ($csp_child_src) {
-      $directives[] = "child-src $csp_child_src";
-    }
-    if ($csp_font_src) {
-      $directives[] = "font-src $csp_font_src";
-    }
-    if ($csp_connect_src) {
-      $directives[] = "connect-src $csp_connect_src";
-    }
-    if ($csp_report_uri) {
-      $directives[] = "report-uri " . url($csp_report_uri);
-    }
-    if ($csp_upgrade_req) {
-      $directives[] = 'upgrade-insecure-requests';
-    }
-    // merge directives
-    $directives = implode('; ', $directives);
   }
 
-  // send HTTP response header if directives were prepared
-  if ($directives) {
+  // If policy-uri is declared, no other directives are permitted.
+  if (isset($csp_policy_uri_directive)) {
+    $directives_string = $csp_policy_uri_directive;
+  }
+  else {
+    $directives_string = implode('; ', $directives);
+  }
+
+  // Send HTTP response header if any directives were configured.
+  if ($directives_string) {
     if ($csp_report_only) {
-      // use report-only mode
-      drupal_add_http_header('Content-Security-Policy-Report-Only', $directives);
+      // Use report-only mode.
+      drupal_add_http_header('Content-Security-Policy-Report-Only', $directives_string);
       if ($csp_vendor_prefix_x) {
-        drupal_add_http_header('X-Content-Security-Policy-Report-Only', $directives);
+        drupal_add_http_header('X-Content-Security-Policy-Report-Only', $directives_string);
       }
       if ($csp_vendor_prefix_webkit) {
-        drupal_add_http_header('X-WebKit-CSP-Report-Only', $directives);
+        drupal_add_http_header('X-WebKit-CSP-Report-Only', $directives_string);
       }
     }
     else {
-      drupal_add_http_header('Content-Security-Policy', $directives);
+      drupal_add_http_header('Content-Security-Policy', $directives_string);
       if ($csp_vendor_prefix_x) {
-        drupal_add_http_header('X-Content-Security-Policy', $directives);
+        drupal_add_http_header('X-Content-Security-Policy', $directives_string);
       }
       if ($csp_vendor_prefix_webkit) {
-        drupal_add_http_header('X-WebKit-CSP', $directives);
+        drupal_add_http_header('X-WebKit-CSP', $directives_string);
       }
     }
   }
