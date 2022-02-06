@@ -16,9 +16,9 @@
  * @param array $options
  *   Array of runtime options.
  *
- * @see _seckit_get_options().
+ * @see _seckit_get_options()
  */
-function hook_seckit_options_alter(&$options) {
+function hook_seckit_options_alter(array &$options) {
   // Set the X-Frame-Options HTTP header value to SAMEORIGIN.
   $options['seckit_clickjacking']['x_frame'] = SECKIT_X_FRAME_SAMEORIGIN;
   // Add a new CSP directive "foo-src example.com".
