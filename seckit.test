@@ -370,6 +370,30 @@ class SecKitTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Tests submitting a long value for a Content Security Policy directive.
+   */
+  public function testCspDirectiveLongValue() {
+    $long_csp_directive = str_repeat('CSP', 1000);
+    $form['seckit_xss[csp][checkbox]'] = TRUE;
+    $form['seckit_xss[csp][default-src]'] = $long_csp_directive;
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $expected = 'default-src ' . $long_csp_directive . '; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL;
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy directive accepted a long value.'));
+  }
+
+  /**
+   * Tests submitting a multiline value for a Content Security Policy directive.
+   */
+  public function testCspDirectiveMultilineValue() {
+    $form['seckit_xss[csp][checkbox]'] = TRUE;
+    $form['seckit_xss[csp][frame-ancestors]'] = "first\nsecond";
+    $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
+    $expected = t('CSP directives cannot contain newlines.');
+    $this->assertText($expected, t('Multiline Content-Security-Policy directive rejected.'));
+  }
+
+  /**
    * Tests disabled X-XSS-Protection HTTP response header.
    */
   public function testXxssProtectionIsDisabled() {

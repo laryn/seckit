@@ -135,104 +135,104 @@ function seckit_admin_form() {
   );
   // CSP default-src directive.
   $form['seckit_xss']['csp']['default-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['default-src'],
     '#title' => 'default-src',
     '#description' => t("Specify security policy for all types of content, which are not specified further (frame-ancestors excepted). Default is 'self'."),
   );
   // CSP script-src directive.
   $form['seckit_xss']['csp']['script-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['script-src'],
     '#title' => 'script-src',
     '#description' => t('Specify trustworthy sources for &lt;script&gt; elements.'),
   );
   // CSP object-src directive.
   $form['seckit_xss']['csp']['object-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['object-src'],
     '#title' => 'object-src',
     '#description' => t('Specify trustworthy sources for &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements.'),
   );
   // CSP style-src directive.
   $form['seckit_xss']['csp']['style-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['style-src'],
     '#title' => 'style-src',
     '#description' => t('Specify trustworthy sources for stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
   );
   // CSP img-src directive.
   $form['seckit_xss']['csp']['img-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['img-src'],
     '#title' => 'img-src',
     '#description' => t('Specify trustworthy sources for &lt;img&gt; elements.'),
   );
   // CSP media-src directive.
   $form['seckit_xss']['csp']['media-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['media-src'],
     '#title' => 'media-src',
     '#description' => t('Specify trustworthy sources for &lt;audio&gt; and &lt;video&gt; elements.'),
   );
   // CSP frame-src directive.
   $form['seckit_xss']['csp']['frame-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['frame-src'],
     '#title' => 'frame-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
   );
   // CSP frame-ancestors directive.
   $form['seckit_xss']['csp']['frame-ancestors'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['frame-ancestors'],
     '#title' => 'frame-ancestors',
     '#description' => t("Specify trustworthy hosts which are allowed to embed this site's resources via &lt;iframe&gt;, &lt;frame&gt;, &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements."),
   );
   // CSP child-src directive.
   $form['seckit_xss']['csp']['child-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['child-src'],
     '#title' => 'child-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements as well as for loading Workers.'),
   );
   // CSP font-src directive.
   $form['seckit_xss']['csp']['font-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['font-src'],
     '#title' => 'font-src',
     '#description' => t('Specify trustworthy sources for @font-src CSS loads.'),
   );
   // CSP connect-src directive.
   $form['seckit_xss']['csp']['connect-src'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['connect-src'],
     '#title' => 'connect-src',
     '#description' => t('Specify trustworthy sources for XMLHttpRequest, WebSocket and EventSource connections.'),
   );
   // CSP report-uri directive.
   $form['seckit_xss']['csp']['report-uri'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['report-uri'],
     '#title' => 'report-uri',
     '#description' => t('Specify a URL (relative to the Drupal root or absolute) to which user-agents will report CSP violations. Use the default value of <code>@csp_report_url</code> (which logs the report data in watchdog), unless you have set up an alternative handler for these reports.', array('@csp_report_url' => SECKIT_CSP_REPORT_URL)),
   );
   // CSP policy-uri directive.
   $form['seckit_xss']['csp']['policy-uri'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_xss']['csp']['policy-uri'],
     '#title' => 'policy-uri',
     '#description' => t("Specify a URL (relative to the Drupal root) for a file containing the (entire) policy. <strong>All other directives will be omitted</strong> by Security Kit, as <code>policy-uri</code> may only be defined in the <em>absence</em> of other policy definitions in the <code>X-Content-Security-Policy</code> HTTP header. The MIME type for this URI <strong>must</strong> be <code>text/x-content-security-policy</code>, otherwise user-agents will enforce the policy <code>allow 'none'</code>  instead."),
@@ -292,11 +292,10 @@ function seckit_admin_form() {
   );
   // Origin whitelist.
   $form['seckit_csrf']['origin_whitelist'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#title' => t('Allow requests from'),
     '#default_value' => implode(", ", $options['seckit_csrf']['origin_whitelist']),
-    '#size' => 90,
-    '#maxlength' => 255,
     '#description' => t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
   );
 
@@ -397,7 +396,7 @@ function seckit_admin_form() {
 
   // Custom text for "disabled JavaScript" message.
   $form['seckit_clickjacking']['javascript']['noscript_message'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Custom text for disabled JavaScript message'),
     '#default_value' => $options['seckit_clickjacking']['noscript_message'],
     '#description' => t('This message will be shown to user when JavaScript is disabled or unsupported in his browser. Default is "Sorry, you need to enable JavaScript to visit this website."'),
@@ -491,8 +490,8 @@ function seckit_admin_form() {
   );
   // Expect-CT report-uri directive.
   $form['seckit_ct']['report-uri'] = array(
-    '#type' => 'textfield',
-    '#maxlength' => 1024,
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#default_value' => $options['seckit_ct']['report-uri'],
     '#title' => 'report-uri',
     '#description' => t('Specify the (absolute) URI to which the user agent should report Expect-CT failures.'),
@@ -529,6 +528,7 @@ function seckit_admin_form() {
   // From-Origin destination.
   $form['seckit_fp']['feature_policy_policy'] = array(
     '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#title' => t('Policy'),
     '#default_value' => $options['seckit_fp']['feature_policy_policy'],
     '#description' => t('Specify the policy to be sent out with Feature-Policy headers.'),
@@ -615,10 +615,10 @@ function seckit_admin_form() {
     )),
   );
   $form['seckit_various']['from_origin_destination'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
+    '#attributes' => array('rows' => 1),
     '#title' => t('Allow loading content to'),
     '#default_value' => $options['seckit_various']['from_origin_destination'],
-    '#size' => 90,
     '#description' => t('Trustworthy destination. Possible variants are: !items', $args),
   );
   // Disable autocomplete on login and registration forms.
@@ -716,6 +716,10 @@ function seckit_admin_form() {
   $form['#validate'][] = 'seckit_admin_form_validate';
   $form['#submit'][] = 'seckit_admin_form_submit';
 
+  $form['#attached']['css'] = array(
+    drupal_get_path('module', 'seckit') . '/css/seckit.admin.css',
+  );
+
   return $form;
 }
 
@@ -761,6 +765,42 @@ function seckit_admin_form_validate($form, &$form_state) {
   if (($js_css_noscript_enable == 1) && (!$noscript_message)) {
     form_error($form['seckit_clickjacking']['noscript_message'], t('You have to set up Custom text for disabled JavaScript message when JS + CSS + Noscript protection is enabled.'));
   }
+
+  // Check for newlines in some textarea inputs where there should be none.
+  $csp_textareas = array(
+    'default-src',
+    'script-src',
+    'object-src',
+    'style-src',
+    'img-src',
+    'media-src',
+    'frame-src',
+    'frame-ancestors',
+    'child-src',
+    'font-src',
+    'connect-src',
+    'report-uri',
+    'policy-uri',
+  );
+  foreach ($csp_textareas as $csp_textarea) {
+    $value = $form_state['values']['seckit_xss']['csp'][$csp_textarea];
+    if ($value !== str_replace(array("\r", "\n"), '', (string) $value)) {
+      form_error($form['seckit_xss']['csp'][$csp_textarea], t('CSP directives cannot contain newlines.'));
+    }
+  }
+  $value = $form_state['values']['seckit_fp']['feature_policy_policy'];
+  if ($value !== str_replace(array("\r", "\n"), '', (string) $value)) {
+    form_error($form['seckit_fp']['feature_policy_policy'], t('Feature policy cannot contain newlines.'));
+  }
+  $value = $form_state['values']['seckit_ct']['report-uri'];
+  if ($value !== str_replace(array("\r", "\n"), '', (string) $value)) {
+    form_error($form['seckit_ct']['report-uri'], t('Expect-CT report-uri cannot contain newlines.'));
+  }
+  $value = $form_state['values']['seckit_csrf']['origin_whitelist'];
+  if ($value !== str_replace(array("\r", "\n"), '', (string) $value)) {
+    form_error($form['seckit_csrf']['origin_whitelist'], t('CSRF Origin Whitelist cannot contain newlines.'));
+  }
+
 }
 
 /**
