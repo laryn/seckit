@@ -375,6 +375,11 @@ function _seckit_csp_report() {
     return;
   }
 
+  // If the report-uri value is empty, do not process the report.
+  if (empty($options['seckit_xss']['csp']['report-uri'])) {
+      return;
+  }
+
   // Check for flooding.
   // Do not write to watchdog when our limits are exceeded.
   $enforce_limits = !$options['seckit_advanced']['unlimited_csp_reports'];
@@ -893,14 +898,10 @@ function _seckit_get_options($reset = FALSE, $alter = TRUE) {
     );
   }
 
-  // Ensure there are non-empty values for the CSP default-src and report-uri
-  // directives.
+  // Ensure there is a non-empty value for the CSP default-src.
   $csp_defaults = $defaults['seckit_xss']['csp'];
   if (!$options['seckit_xss']['csp']['default-src']) {
     $options['seckit_xss']['csp']['default-src'] = $csp_defaults['default-src'];
-  }
-  if (!$options['seckit_xss']['csp']['report-uri']) {
-    $options['seckit_xss']['csp']['report-uri'] = $csp_defaults['report-uri'];
   }
 
   // Convert ['seckit_clickjacking']['x_frame_allow_from'] to an array.

@@ -148,7 +148,7 @@ class SecKitTestCase extends DrupalWebTestCase {
       'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
     );
 
-    // First test.  No report-uri has been specified.
+    // Test 1: Default report-uri has been specified.
     $form_for_test0 = $base_form;
     $this->drupalPost('admin/config/system/seckit', $form_for_test0, t('Save configuration'));
 
@@ -160,7 +160,7 @@ class SecKitTestCase extends DrupalWebTestCase {
     $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
       t('X-WebKit-CSP has default report-uri directive.'));
 
-    // Second test.  A valid internal path "node" has been specified as the
+    // Test 2: A valid internal path "node" has been specified as the
     // report-uri.
     $form_for_test1 = $base_form;
     $report_uri_for_test1 = 'node';
@@ -182,7 +182,7 @@ class SecKitTestCase extends DrupalWebTestCase {
         '%uri' => $expected_report_uri_for_test1,
       )));
 
-    // Third test.  A non-existent internal path "foo/bar/report-csp-violation"
+    // Test 3: A non-existent internal path "foo/bar/report-csp-violation"
     // has been specified as the report-uri.
     $form_for_test2 = $base_form;
     $report_uri_for_test2 = 'foo/bar/report-csp-violation';
@@ -215,8 +215,7 @@ class SecKitTestCase extends DrupalWebTestCase {
         '%uri' => $expected_report_uri_for_test3,
       )));
 
-    // Another test.
-    // The report-uri value is https://report-uri.io/report/DrupalSeckitTest
+    // Test 4: report-uri is http://report-uri.io/report/DrupalSeckitTest
     $form_for_test4 = $base_form;
     $report_uri_for_test4 = 'https://report-uri.io/report/DrupalSeckitTest';
     $form_for_test4['seckit_xss[csp][report-uri]'] = $report_uri_for_test4;
@@ -237,7 +236,7 @@ class SecKitTestCase extends DrupalWebTestCase {
         '%uri' => $expected_report_uri_for_test4,
       )));
 
-    // Last test.  report-uri is //report-uri.io/report/DrupalSeckitTest.
+    // Test 5: report-uri is //report-uri.io/report/DrupalSeckitTest
     $form_for_test5 = $base_form;
     $report_uri_for_test5 = '//report-uri.io/report/DrupalSeckitTest';
     $form_for_test5['seckit_xss[csp][report-uri]'] = $report_uri_for_test5;
@@ -257,6 +256,20 @@ class SecKitTestCase extends DrupalWebTestCase {
       t('X-WebKit-CSP has %uri as report-uri directive.', array(
         '%uri' => $expected_report_uri_for_test5,
       )));
+
+    // Test 6: report-uri has been left empty.
+    $form_for_test6 = $base_form;
+    $report_uri_for_test6 = '';
+    $form_for_test6['seckit_xss[csp][report-uri]'] = $report_uri_for_test6;
+    $this->drupalPost('admin/config/system/seckit', $form_for_test6, t('Save configuration'));
+
+    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *';
+    $this->assertEqual($expected, $this->drupalGetHeader('Content-Security-Policy'),
+      t('Content-Security-Policy has no report-uri directive.'));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-Content-Security-Policy'),
+      t('X-Content-Security-Policy has no report-uri directive.'));
+    $this->assertEqual($expected, $this->drupalGetHeader('X-WebKit-CSP'),
+      t('X-WebKit-CSP has no report-uri directive.'));
   }
 
   /**
@@ -280,7 +293,7 @@ class SecKitTestCase extends DrupalWebTestCase {
       'seckit_xss[csp][child-src]'             => '',
       'seckit_xss[csp][font-src]'              => '',
       'seckit_xss[csp][connect-src]'           => '',
-      'seckit_xss[csp][report-uri]'            => '',
+      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
       'seckit_xss[csp][policy-uri]'            => '',
     );
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
@@ -314,7 +327,7 @@ class SecKitTestCase extends DrupalWebTestCase {
       'seckit_xss[csp][child-src]'             => '',
       'seckit_xss[csp][font-src]'              => '',
       'seckit_xss[csp][connect-src]'           => '',
-      'seckit_xss[csp][report-uri]'            => '',
+      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
       'seckit_xss[csp][policy-uri]'            => '',
     );
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
