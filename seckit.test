@@ -611,11 +611,6 @@ class SecKitTestCase extends DrupalWebTestCase {
     $this->drupalPost('admin/config/system/seckit', $form, t('Save configuration'));
     $expected = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
     $this->assertEqual($expected, $this->drupalGetHeader('Feature-Policy'), t('The feature-policy header is correctly sent.'));
-    debug(array(
-      'expected' => $expected,
-      'received' => $this->drupalGetHeader('Feature-Policy'),
-      'headers' => $this->drupalGetHeaders(),
-    ));
   }
 
 }
