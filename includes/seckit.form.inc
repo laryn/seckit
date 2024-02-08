@@ -258,7 +258,7 @@ function seckit_admin_form() {
     '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['frame-src'],
     '#title' => 'frame-src',
-    '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
+    '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements.'),
     '#states' => array(
       'visible' => array(
         'input[name="xss[csp][directives][use-policy-uri]"]' => array('checked' => FALSE),
