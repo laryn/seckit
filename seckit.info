@@ -1,5 +1,6 @@
 name = Security Kit
 description = "Enhance the security of your Backdrop website."
+type = module
 package = Security
 backdrop = 1.x
 configure = admin/config/system/seckit
