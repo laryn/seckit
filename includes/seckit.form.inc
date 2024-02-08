@@ -200,6 +200,19 @@ function seckit_admin_form() {
       ),
     ),
   );
+  // CSP script-src-elem directive.
+  $form['xss']['csp']['directives']['script-src-elem'] = array(
+    '#type' => 'textarea',
+    '#rows' => 1,
+    '#default_value' => $options['xss']['csp']['directives']['script-src-elem'],
+    '#title' => 'script-src-elem',
+    '#description' => t('Specify trustworthy sources for elements in &lt;script&gt; elements.'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="xss[csp][directives][use-policy-uri]"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
   // CSP object-src directive.
   $form['xss']['csp']['directives']['object-src'] = array(
     '#type' => 'textarea',
@@ -220,6 +233,19 @@ function seckit_admin_form() {
     '#default_value' => $options['xss']['csp']['directives']['style-src'],
     '#title' => 'style-src',
     '#description' => t('Specify trustworthy sources for stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="xss[csp][directives][use-policy-uri]"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+  // CSP style-src-elem directive.
+  $form['xss']['csp']['directives']['style-src-elem'] = array(
+    '#type' => 'textarea',
+    '#rows' => 1,
+    '#default_value' => $options['xss']['csp']['directives']['style-src-elem'],
+    '#title' => 'style-src-elem',
+    '#description' => t('Specify trustworthy sources for elements in stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
     '#states' => array(
       'visible' => array(
         'input[name="xss[csp][directives][use-policy-uri]"]' => array('checked' => FALSE),
@@ -910,8 +936,10 @@ function seckit_admin_form_validate($form, &$form_state) {
   $csp_textareas = array(
     'default-src',
     'script-src',
+    'script-src-elem',
     'object-src',
     'style-src',
+    'style-src-elem',
     'img-src',
     'media-src',
     'frame-src',
