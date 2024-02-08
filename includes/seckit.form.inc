@@ -67,6 +67,11 @@ function seckit_admin_form() {
     '#tree' => TRUE,
     '#collapsed' => !($options['xss']['csp']['vendor-prefix']['x'] || $options['xss']['csp']['vendor-prefix']['webkit']),
     '#description' => t('Support for legacy vendor-prefixed CSP headers. Details at !caniuse.', $args),
+    '#states' => array(
+      'visible' => array(
+        'input[name="xss[csp][checkbox]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['xss']['csp']['vendor-prefix']['x'] = array(
     '#type' => 'checkbox',
@@ -114,7 +119,8 @@ function seckit_admin_form() {
     '#description' => t("Reporting limits should be enabled once your CSP is production-ready, to prevent excessive report logging should the violation report URL be flooded."),
     '#states' => array(
       'visible' => array(
-        ':input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => TRUE),
+        'input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => TRUE),
+        'input[name="xss[csp][checkbox]"]' => array('checked' => TRUE),
       ),
     ),
   );
@@ -842,7 +848,7 @@ function seckit_admin_form() {
     '#collapsed' => ($options['advanced']['csp_limits'] == $defaults['advanced']['csp_limits']),
     '#states' => array(
       'visible' => array(
-        ':input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => FALSE),
+        'input[name="seckit_advanced[unlimited_csp_reports]"]' => array('checked' => FALSE),
       ),
     ),
   );
