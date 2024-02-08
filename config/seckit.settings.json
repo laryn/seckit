@@ -22,6 +22,7 @@
       "child-src": "",
       "font-src": "",
       "connect-src": "",
+      "worker-src": "",
       "report-uri": "report-csp-violation",
       "policy-uri": ""
     },

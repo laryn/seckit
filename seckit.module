@@ -781,6 +781,7 @@ function _seckit_get_options_defaults() {
         'child-src' => '',
         'font-src' => '',
         'connect-src' => '',
+        'worker-src' => '',
         'report-uri' => SECKIT_CSP_REPORT_URL,
       ),
       'upgrade-req' => '',

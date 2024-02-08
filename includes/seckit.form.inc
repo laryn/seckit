@@ -343,6 +343,19 @@ function seckit_admin_form() {
       ),
     ),
   );
+  // CSP worker-src directive.
+  $form['xss']['csp']['directives']['worker-src'] = array(
+    '#type' => 'textarea',
+    '#rows' => 1,
+    '#default_value' => $options['xss']['csp']['directives']['worker-src'],
+    '#title' => 'worker-src',
+    '#description' => t('Specify trustworthy sources for Worker, SharedWorker, or ServiceWorker scripts.'),
+    '#states' => array(
+      'visible' => array(
+        'input[name="xss[csp][directives][use-policy-uri]"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
   // CSP report-uri directive.
   $form['xss']['csp']['directives']['report-uri'] = array(
     '#type' => 'textarea',
@@ -947,6 +960,7 @@ function seckit_admin_form_validate($form, &$form_state) {
     'child-src',
     'font-src',
     'connect-src',
+    'worker-src',
     'report-uri',
     'policy-uri',
   );
