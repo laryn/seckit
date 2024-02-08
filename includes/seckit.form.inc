@@ -161,7 +161,7 @@ function seckit_admin_form() {
   // CSP policy-uri directive.
   $form['xss']['csp']['directives']['policy-uri'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['policy-uri'],
     '#title' => 'policy-uri',
     '#description' => t("Specify a URL (relative to the Backdrop root) for a file containing the (entire) policy. The MIME type for this URI <strong>must</strong> be <code>text/x-content-security-policy</code>, otherwise user-agents will enforce the policy <code>allow 'none'</code>  instead."),
@@ -177,7 +177,7 @@ function seckit_admin_form() {
   // CSP default-src directive.
   $form['xss']['csp']['directives']['default-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['default-src'],
     '#title' => 'default-src',
     '#description' => t("Specify security policy for all types of content, which are not specified further (frame-ancestors excepted). Default is 'self'."),
@@ -190,7 +190,7 @@ function seckit_admin_form() {
   // CSP script-src directive.
   $form['xss']['csp']['directives']['script-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['script-src'],
     '#title' => 'script-src',
     '#description' => t('Specify trustworthy sources for &lt;script&gt; elements.'),
@@ -203,7 +203,7 @@ function seckit_admin_form() {
   // CSP object-src directive.
   $form['xss']['csp']['directives']['object-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['object-src'],
     '#title' => 'object-src',
     '#description' => t('Specify trustworthy sources for &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements.'),
@@ -216,7 +216,7 @@ function seckit_admin_form() {
   // CSP style-src directive.
   $form['xss']['csp']['directives']['style-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['style-src'],
     '#title' => 'style-src',
     '#description' => t('Specify trustworthy sources for stylesheets. Note, that inline stylesheets and style attributes of HTML elements are allowed.'),
@@ -229,7 +229,7 @@ function seckit_admin_form() {
   // CSP img-src directive.
   $form['xss']['csp']['directives']['img-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['img-src'],
     '#title' => 'img-src',
     '#description' => t('Specify trustworthy sources for &lt;img&gt; elements.'),
@@ -242,7 +242,7 @@ function seckit_admin_form() {
   // CSP media-src directive.
   $form['xss']['csp']['directives']['media-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['media-src'],
     '#title' => 'media-src',
     '#description' => t('Specify trustworthy sources for &lt;audio&gt; and &lt;video&gt; elements.'),
@@ -255,7 +255,7 @@ function seckit_admin_form() {
   // CSP frame-src directive.
   $form['xss']['csp']['directives']['frame-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['frame-src'],
     '#title' => 'frame-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements. This directive is deprecated and will be replaced by child-src. It is recommended to use the both the frame-src and child-src directives until all browsers you support recognize the child-src directive.'),
@@ -268,7 +268,7 @@ function seckit_admin_form() {
   // CSP frame-ancestors directive.
   $form['xss']['csp']['directives']['frame-ancestors'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['frame-ancestors'],
     '#title' => 'frame-ancestors',
     '#description' => t("Specify trustworthy hosts which are allowed to embed this site's resources via &lt;iframe&gt;, &lt;frame&gt;, &lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; elements."),
@@ -281,7 +281,7 @@ function seckit_admin_form() {
   // CSP child-src directive.
   $form['xss']['csp']['directives']['child-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['child-src'],
     '#title' => 'child-src',
     '#description' => t('Specify trustworthy sources for &lt;iframe&gt; and &lt;frame&gt; elements as well as for loading Workers.'),
@@ -294,7 +294,7 @@ function seckit_admin_form() {
   // CSP font-src directive.
   $form['xss']['csp']['directives']['font-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['font-src'],
     '#title' => 'font-src',
     '#description' => t('Specify trustworthy sources for @font-src CSS loads.'),
@@ -307,7 +307,7 @@ function seckit_admin_form() {
   // CSP connect-src directive.
   $form['xss']['csp']['directives']['connect-src'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['connect-src'],
     '#title' => 'connect-src',
     '#description' => t('Specify trustworthy sources for XMLHttpRequest, WebSocket and EventSource connections.'),
@@ -320,7 +320,7 @@ function seckit_admin_form() {
   // CSP report-uri directive.
   $form['xss']['csp']['directives']['report-uri'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['xss']['csp']['directives']['report-uri'],
     '#title' => 'report-uri',
     '#description' => t('Specify a URL (relative to the Backdrop root or absolute) to which user-agents will report CSP violations. Use the default value of <code>@csp_report_url</code> (which logs the report data in watchdog), unless you have set up an alternative handler for these reports.', array('@csp_report_url' => SECKIT_CSP_REPORT_URL)),
@@ -386,7 +386,7 @@ function seckit_admin_form() {
   // Origin whitelist.
   $form['csrf']['origin_whitelist'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#title' => t('Allow requests from'),
     '#default_value' => implode(", ", $options['csrf']['origin_whitelist']),
     '#description' => t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
@@ -620,7 +620,7 @@ function seckit_admin_form() {
   // Expect-CT report-uri directive.
   $form['ct']['report-uri'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#default_value' => $options['ct']['report-uri'],
     '#title' => 'report-uri',
     '#description' => t('Specify the (absolute) URI to which the user agent should report Expect-CT failures.'),
@@ -657,7 +657,7 @@ function seckit_admin_form() {
   // From-Origin destination.
   $form['fp']['feature_policy_policy'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#title' => t('Policy'),
     '#default_value' => $options['fp']['feature_policy_policy'],
     '#description' => t('Specify the policy to be sent out with Feature-Policy headers.'),
@@ -745,7 +745,7 @@ function seckit_admin_form() {
   );
   $form['various']['from_origin_destination'] = array(
     '#type' => 'textarea',
-    '#attributes' => array('rows' => 1),
+    '#rows' => 1,
     '#title' => t('Allow loading content to'),
     '#default_value' => $options['various']['from_origin_destination'],
     '#description' => t('Trustworthy destination. Possible variants are: !items', $args),
