@@ -90,7 +90,7 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#description' => t("Upgrade Insecure Requests (upgrade-insecure-requests) instructs user agents to rewrite URL schemes, changing HTTP to HTTPS. This directive is used to protect your visitors from insecure content or for websites with large numbers of old URL's that need to be rewritten."),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'input[name="xss[csp][checkbox]"]' => array('checked' => TRUE),
       ),
     ),
@@ -103,7 +103,7 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#description' => t('Use Content Security Policy in report-only mode. In this case, violations of policies will only be reported, not blocked. Use this while configuring policies. Reports are logged to watchdog.'),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'input[name="xss[csp][checkbox]"]' => array('checked' => TRUE),
       ),
     ),
@@ -145,8 +145,8 @@ function seckit_admin_form() {
     '#collapsed' => FALSE,
     '#description' => t("Set up security policy for different types of content. Don't use www prefix. Keywords are: !keywords Wildcards (*) are allowed: !wildcards More information is available at !spec.", $args),
     '#states' => array(
-      'disabled' => array(
-        'input[name="xss[csp][checkbox]"]' => array('checked' => FALSE),
+      'visible' => array(
+        'input[name="xss[csp][checkbox]"]' => array('checked' => TRUE),
       ),
     ),
   );
@@ -391,7 +391,7 @@ function seckit_admin_form() {
     '#default_value' => implode(", ", $options['csrf']['origin_whitelist']),
     '#description' => t('Comma separated list of trustworthy sources. Do not enter your website URL - it is automatically added. Syntax of the source is: [protocol] :// [host] : [port] . E.g, http://example.com, https://example.com, https://www.example.com, http://www.example.com:8080'),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'input[name="csrf[origin]"]' => array('checked' => TRUE),
       ),
     ),
@@ -461,7 +461,7 @@ function seckit_admin_form() {
       'x_frame_allow_from',
     ),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'select[name="clickjacking[x_frame]"]' => array('value' => SECKIT_X_FRAME_ALLOW_FROM),
       ),
       'required' => array(
@@ -512,7 +512,10 @@ function seckit_admin_form() {
       'noscript_message',
     ),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
+        'input[name="clickjacking[js_css_noscript]"]' => array('checked' => TRUE),
+      ),
+      'required' => array(
         'input[name="clickjacking[js_css_noscript]"]' => array('checked' => TRUE),
       ),
     ),
@@ -546,10 +549,10 @@ function seckit_admin_form() {
     '#description' => t('Specify Max-Age value in seconds. It sets period when user-agent should remember receipt of this header field from this server. Default is 1000.'),
     '#default_value' => $options['ssl']['hsts_max_age'],
     '#states' => array(
-      'required' => array(
+      'visible' => array(
         'input[name="ssl[hsts]"]' => array('checked' => TRUE),
       ),
-      'enabled' => array(
+      'required' => array(
         'input[name="ssl[hsts]"]' => array('checked' => TRUE),
       ),
     ),
@@ -562,7 +565,7 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#default_value' => $options['ssl']['hsts_subdomains'],
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'input[name="ssl[hsts]"]' => array('checked' => TRUE),
       ),
     ),
@@ -578,7 +581,7 @@ function seckit_admin_form() {
     '#return_value' => 1,
     '#default_value' => $options['ssl']['hsts_preload'],
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
         'input[name="ssl[hsts]"]' => array('checked' => TRUE),
       ),
     ),
@@ -750,7 +753,10 @@ function seckit_admin_form() {
     '#default_value' => $options['various']['from_origin_destination'],
     '#description' => t('Trustworthy destination. Possible variants are: !items', $args),
     '#states' => array(
-      'enabled' => array(
+      'visible' => array(
+        'input[name="various[from_origin]"]' => array('checked' => TRUE),
+      ),
+      'required' => array(
         'input[name="various[from_origin]"]' => array('checked' => TRUE),
       ),
     ),
