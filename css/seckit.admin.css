@@ -1,5 +1,4 @@
 #seckit-admin-form textarea,
-#seckit-admin-form input[type=text],
-#seckit-admin-form .form-textarea-wrapper .grippie {
+#seckit-admin-form input[type=text] {
   width: 60em;
 }

@@ -1,0 +1,5 @@
+[SecKitTestCase]
+name = Security Kit functionality
+description = Tests functionality and settings page of Security Kit module.
+group = Security Kit
+file = seckit.test

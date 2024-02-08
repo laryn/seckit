@@ -1,30 +1,37 @@
-# Description
+# Security Kit (SecKit)
 
 Security Kit (SecKit) provides various options to improve the security
-of Drupal web sites.
+of Backdrop web sites.
 
 Modern browsers support many techniques for mitigating common web
-vulnerabilities like XSS, CSRF, Clickjacking.  However, these techniques
+vulnerabilities like XSS, CSRF, Clickjacking. However, these techniques
 require server-side implementation, so SecKit provides an easy and
 flexible way to support these features.
 
-# Installation
+## Installation and Usage
 
-1. Extract archive with module to contributed modules directory.
-2. Enable it on Modules page.
-3. Settings of module are available on http://www.example.com/admin/config/system/seckit
+- Install this module using the [official Backdrop CMS instructions](https://backdropcms.org/guide/modules)
+- Usage instructions can be [viewed and edited in the Wiki](https://github.com/backdrop-contrib/seckit/wiki).
 
-# Features
+## Issues
 
-More information about features can be found on project page
-https://drupal.org/project/seckit
+ - Bugs and Feature requests should be reported in the [Issue Queue](https://github.com/backdrop-contrib/seckit/issues).
 
-# Issues
+## Current Maintainers
 
-If you experience any problems with SecKit, please,
-report issues on https://drupal.org/project/issues/seckit
+ - [Laryn Kragt Bakker](https://github.com/laryn).
+ - Seeking co-maintainers
 
-# Author
+## Credits
 
-Alex Rodionov
-https://github.com/p0deje/seckit
+ - Ported to Backdrop CMS by [Laryn Kragt Bakker](https://github.com/laryn).
+ - Backdrop development is supported by [Aten Design Group](https://aten.io).
+ - Maintainers on drupal.org include [p0deje](https://www.drupal.org/u/p0deje),
+   [jweowu](https://www.drupal.org/u/jweowu),
+   [mcdruid](https://www.drupal.org/u/mcdruid),
+   and [badjava](https://www.drupal.org/u/badjava).
+
+## License
+
+This project is GPL v2 software. See the LICENSE.txt file in this directory for
+complete text.
