@@ -17,6 +17,16 @@ function seckit_install() {
 }
 
 /**
+ * Implements hook_uninstall().
+ */
+function seckit_uninstall() {
+  // Reset defaults.
+  $config = config('system.core');
+  $config->set('x_frame_options', 'SAMEORIGIN');
+  $config->save();
+}
+
+/**
  * Implements hook_requirements().
  */
 function seckit_requirements($phase) {

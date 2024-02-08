@@ -45,27 +45,29 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testCspHasAllDirectives() {
     $form = array(
-      'seckit_xss[csp][checkbox]'              => TRUE,
-      'seckit_xss[csp][vendor-prefix][x]'      => TRUE,
-      'seckit_xss[csp][vendor-prefix][webkit]' => TRUE,
-      'seckit_xss[csp][default-src]'           => '*',
-      'seckit_xss[csp][script-src]'            => '*',
-      'seckit_xss[csp][object-src]'            => '*',
-      'seckit_xss[csp][style-src]'             => '*',
-      'seckit_xss[csp][img-src]'               => '*',
-      'seckit_xss[csp][media-src]'             => '*',
-      'seckit_xss[csp][frame-src]'             => '*',
-      'seckit_xss[csp][frame-ancestors]'       => '*',
-      'seckit_xss[csp][child-src]'             => '*',
-      'seckit_xss[csp][font-src]'              => '*',
-      'seckit_xss[csp][connect-src]'           => '*',
-      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
-      'seckit_xss[csp][upgrade-req]'           => TRUE,
+      'xss[csp][checkbox]' => TRUE,
+      'xss[csp][vendor-prefix][x]' => TRUE,
+      'xss[csp][vendor-prefix][webkit]' => TRUE,
+      'xss[csp][directives][default-src]' => '*',
+      'xss[csp][directives][script-src]' => '*',
+      'xss[csp][directives][script-src-elem]' => '*',
+      'xss[csp][directives][object-src]' => '*',
+      'xss[csp][directives][style-src]' => '*',
+      'xss[csp][directives][style-src-elem]' => '*',
+      'xss[csp][directives][img-src]' => '*',
+      'xss[csp][directives][media-src]' => '*',
+      'xss[csp][directives][frame-src]' => '*',
+      'xss[csp][directives][frame-ancestors]' => '*',
+      'xss[csp][directives][child-src]' => '*',
+      'xss[csp][directives][font-src]' => '*',
+      'xss[csp][directives][connect-src]' => '*',
+      'xss[csp][directives][worker-src]' => '*',
+      'xss[csp][directives][report-uri]' => SECKIT_CSP_REPORT_URL,
+      'xss[csp][upgrade-req]' => TRUE,
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL . '; upgrade-insecure-requests';
-    $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
-      t('Content-Security-Policy has all the directives.'));
+    $expected = 'upgrade-insecure-requests; default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri /' . SECKIT_CSP_REPORT_URL;
+    $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'), t('Content-Security-Policy has all the directives.'));
     $this->assertEqual($expected, $this->backdropGetHeader('X-Content-Security-Policy'),
       t('X-Content-Security-Policy has all the directives.'));
     $this->assertEqual($expected, $this->backdropGetHeader('X-WebKit-CSP'),
@@ -79,25 +81,28 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testCspPolicyUriDirectiveOnly() {
     $form = array(
-      'seckit_xss[csp][checkbox]'              => TRUE,
-      'seckit_xss[csp][vendor-prefix][x]'      => TRUE,
-      'seckit_xss[csp][vendor-prefix][webkit]' => TRUE,
-      'seckit_xss[csp][default-src]'           => '*',
-      'seckit_xss[csp][script-src]'            => '*',
-      'seckit_xss[csp][object-src]'            => '*',
-      'seckit_xss[csp][style-src]'             => '*',
-      'seckit_xss[csp][img-src]'               => '*',
-      'seckit_xss[csp][media-src]'             => '*',
-      'seckit_xss[csp][frame-src]'             => '*',
-      'seckit_xss[csp][frame-ancestors]'       => '*',
-      'seckit_xss[csp][child-src]'             => '*',
-      'seckit_xss[csp][font-src]'              => '*',
-      'seckit_xss[csp][connect-src]'           => '*',
-      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
-      'seckit_xss[csp][policy-uri]'            => 'csp.xml',
+      'xss[csp][checkbox]' => TRUE,
+      'xss[csp][vendor-prefix][x]' => TRUE,
+      'xss[csp][vendor-prefix][webkit]' => TRUE,
+      'xss[csp][directives][default-src]' => '*',
+      'xss[csp][directives][script-src]' => '*',
+      'xss[csp][directives][script-src-elem]' => '*',
+      'xss[csp][directives][object-src]' => '*',
+      'xss[csp][directives][style-src]' => '*',
+      'xss[csp][directives][style-src-elem]' => '*',
+      'xss[csp][directives][img-src]' => '*',
+      'xss[csp][directives][media-src]' => '*',
+      'xss[csp][directives][frame-src]' => '*',
+      'xss[csp][directives][frame-ancestors]' => '*',
+      'xss[csp][directives][child-src]' => '*',
+      'xss[csp][directives][font-src]' => '*',
+      'xss[csp][directives][connect-src]' => '*',
+      'xss[csp][directives][worker-src]' => '*',
+      'xss[csp][directives][report-uri]' => SECKIT_CSP_REPORT_URL,
+      'xss[csp][directives][policy-uri]' => 'csp.xml',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = 'policy-uri ' . base_path() . 'csp.xml';
+    $expected = 'policy-uri /csp.xml';
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has only policy-uri.'));
     $this->assertEqual($expected, $this->backdropGetHeader('X-Content-Security-Policy'),
@@ -113,31 +118,30 @@ class SecKitTestCase extends BackdropWebTestCase {
    * an absolute URI.
    */
   public function testCspReportUriDirectiveOnly() {
-
-    // report-uri is report-csp-violation.
     $base_form = array(
-      'seckit_xss[csp][checkbox]'              => TRUE,
-      'seckit_xss[csp][vendor-prefix][x]'      => TRUE,
-      'seckit_xss[csp][vendor-prefix][webkit]' => TRUE,
-      'seckit_xss[csp][default-src]'           => '*',
-      'seckit_xss[csp][script-src]'            => '*',
-      'seckit_xss[csp][object-src]'            => '*',
-      'seckit_xss[csp][style-src]'             => '*',
-      'seckit_xss[csp][img-src]'               => '*',
-      'seckit_xss[csp][media-src]'             => '*',
-      'seckit_xss[csp][frame-src]'             => '*',
-      'seckit_xss[csp][frame-ancestors]'       => '*',
-      'seckit_xss[csp][child-src]'             => '*',
-      'seckit_xss[csp][font-src]'              => '*',
-      'seckit_xss[csp][connect-src]'           => '*',
-      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
+      'xss[csp][checkbox]' => TRUE,
+      'xss[csp][vendor-prefix][x]' => TRUE,
+      'xss[csp][vendor-prefix][webkit]' => TRUE,
+      'xss[csp][directives][default-src]' => '*',
+      'xss[csp][directives][script-src]' => '*',
+      'xss[csp][directives][script-src-elem]' => '*',
+      'xss[csp][directives][object-src]' => '*',
+      'xss[csp][directives][style-src]' => '*',
+      'xss[csp][directives][style-src-elem]' => '*',
+      'xss[csp][directives][img-src]' => '*',
+      'xss[csp][directives][media-src]' => '*',
+      'xss[csp][directives][frame-src]' => '*',
+      'xss[csp][directives][frame-ancestors]' => '*',
+      'xss[csp][directives][child-src]' => '*',
+      'xss[csp][directives][font-src]' => '*',
+      'xss[csp][directives][connect-src]' => '*',
+      'xss[csp][directives][worker-src]' => '*',
+      'xss[csp][directives][report-uri]' => SECKIT_CSP_REPORT_URL,
     );
-
     // Test 1: Default report-uri has been specified.
     $form_for_test0 = $base_form;
     $this->backdropPost('admin/config/system/seckit', $form_for_test0, t('Save configuration'));
-
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . url(SECKIT_CSP_REPORT_URL);
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri /' . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has default report-uri directive.'));
     $this->assertEqual($expected, $this->backdropGetHeader('X-Content-Security-Policy'),
@@ -149,11 +153,11 @@ class SecKitTestCase extends BackdropWebTestCase {
     // report-uri.
     $form_for_test1 = $base_form;
     $report_uri_for_test1 = 'node';
-    $form_for_test1['xss[csp][report-uri]'] = $report_uri_for_test1;
+    $form_for_test1['xss[csp][directives][report-uri]'] = $report_uri_for_test1;
     $this->backdropPost('admin/config/system/seckit', $form_for_test1, t('Save configuration'));
 
     $expected_report_uri_for_test1 = url($report_uri_for_test1);
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test1;
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri ' . $expected_report_uri_for_test1;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has %uri as report-uri directive.', array(
         '%uri' => $expected_report_uri_for_test1,
@@ -171,7 +175,7 @@ class SecKitTestCase extends BackdropWebTestCase {
     // has been specified as the report-uri.
     $form_for_test2 = $base_form;
     $report_uri_for_test2 = 'foo/bar/report-csp-violation';
-    $form_for_test2['xss[csp][report-uri]'] = $report_uri_for_test2;
+    $form_for_test2['xss[csp][directives][report-uri]'] = $report_uri_for_test2;
     $this->backdropPost('admin/config/system/seckit', $form_for_test2, t('Save configuration'));
 
     $expected_err_msg = t('Non-existent path for report-uri given: %uri', array(
@@ -182,11 +186,11 @@ class SecKitTestCase extends BackdropWebTestCase {
     // Fourth test. report-uri is https://report-uri.io/report/BackdropSeckitTest
     $form_for_test3 = $base_form;
     $report_uri_for_test3 = 'https://report-uri.io/report/BackdropSeckitTest';
-    $form_for_test3['xss[csp][report-uri]'] = $report_uri_for_test3;
+    $form_for_test3['xss[csp][directives][report-uri]'] = $report_uri_for_test3;
     $this->backdropPost('admin/config/system/seckit', $form_for_test3, t('Save configuration'));
 
     $expected_report_uri_for_test3 = $report_uri_for_test3;
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test3;
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri ' . $expected_report_uri_for_test3;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has %uri as report-uri directive.', array(
         '%uri' => $expected_report_uri_for_test3,
@@ -203,11 +207,11 @@ class SecKitTestCase extends BackdropWebTestCase {
     // Test 4: report-uri is http://report-uri.io/report/BackdropSeckitTest
     $form_for_test4 = $base_form;
     $report_uri_for_test4 = 'https://report-uri.io/report/BackdropSeckitTest';
-    $form_for_test4['xss[csp][report-uri]'] = $report_uri_for_test4;
+    $form_for_test4['xss[csp][directives][report-uri]'] = $report_uri_for_test4;
     $this->backdropPost('admin/config/system/seckit', $form_for_test4, t('Save configuration'));
 
     $expected_report_uri_for_test4 = $report_uri_for_test4;
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test4;
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri ' . $expected_report_uri_for_test4;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has %uri as report-uri directive.', array(
         '%uri' => $expected_report_uri_for_test4,
@@ -224,11 +228,11 @@ class SecKitTestCase extends BackdropWebTestCase {
     // Test 5: report-uri is //report-uri.io/report/BackdropSeckitTest.
     $form_for_test5 = $base_form;
     $report_uri_for_test5 = '//report-uri.io/report/BackdropSeckitTest';
-    $form_for_test5['xss[csp][report-uri]'] = $report_uri_for_test5;
+    $form_for_test5['xss[csp][directives][report-uri]'] = $report_uri_for_test5;
     $this->backdropPost('admin/config/system/seckit', $form_for_test5, t('Save configuration'));
 
     $expected_report_uri_for_test5 = $report_uri_for_test5;
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; report-uri ' . $expected_report_uri_for_test5;
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *; report-uri ' . $expected_report_uri_for_test5;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has %uri as report-uri directive.', array(
         '%uri' => $expected_report_uri_for_test5,
@@ -245,10 +249,10 @@ class SecKitTestCase extends BackdropWebTestCase {
     // Test 6: report-uri has been left empty.
     $form_for_test6 = $base_form;
     $report_uri_for_test6 = '';
-    $form_for_test6['xss[csp][report-uri]'] = $report_uri_for_test6;
+    $form_for_test6['xss[csp][directives][report-uri]'] = $report_uri_for_test6;
     $this->backdropPost('admin/config/system/seckit', $form_for_test6, t('Save configuration'));
 
-    $expected = 'default-src *; script-src *; object-src *; style-src *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *';
+    $expected = 'default-src *; script-src *; script-src-elem *; object-src *; style-src *; style-src-elem *; img-src *; media-src *; frame-src *; frame-ancestors *; child-src *; font-src *; connect-src *; worker-src *';
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has no report-uri directive.'));
     $this->assertEqual($expected, $this->backdropGetHeader('X-Content-Security-Policy'),
@@ -264,25 +268,28 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testCspAllDirectivesEmpty() {
     $form = array(
-      'seckit_xss[csp][checkbox]'              => TRUE,
-      'seckit_xss[csp][vendor-prefix][x]'      => FALSE,
-      'seckit_xss[csp][vendor-prefix][webkit]' => FALSE,
-      'seckit_xss[csp][default-src]'           => '',
-      'seckit_xss[csp][script-src]'            => '',
-      'seckit_xss[csp][object-src]'            => '',
-      'seckit_xss[csp][img-src]'               => '',
-      'seckit_xss[csp][media-src]'             => '',
-      'seckit_xss[csp][style-src]'             => '',
-      'seckit_xss[csp][frame-src]'             => '',
-      'seckit_xss[csp][frame-ancestors]'       => '',
-      'seckit_xss[csp][child-src]'             => '',
-      'seckit_xss[csp][font-src]'              => '',
-      'seckit_xss[csp][connect-src]'           => '',
-      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
-      'seckit_xss[csp][policy-uri]'            => '',
+      'xss[csp][checkbox]' => TRUE,
+      'xss[csp][vendor-prefix][x]' => FALSE,
+      'xss[csp][vendor-prefix][webkit]' => FALSE,
+      'xss[csp][directives][default-src]' => '',
+      'xss[csp][directives][script-src]' => '',
+      'xss[csp][directives][script-src-elem]' => '',
+      'xss[csp][directives][object-src]' => '',
+      'xss[csp][directives][img-src]' => '',
+      'xss[csp][directives][media-src]' => '',
+      'xss[csp][directives][style-src]' => '',
+      'xss[csp][directives][style-src-elem]' => '',
+      'xss[csp][directives][frame-src]' => '',
+      'xss[csp][directives][frame-ancestors]' => '',
+      'xss[csp][directives][child-src]' => '',
+      'xss[csp][directives][font-src]' => '',
+      'xss[csp][directives][connect-src]' => '',
+      'xss[csp][directives][worker-src]' => '',
+      'xss[csp][directives][report-uri]' => SECKIT_CSP_REPORT_URL,
+      'xss[csp][directives][policy-uri]' => '',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = "default-src 'self'; report-uri " . base_path() . SECKIT_CSP_REPORT_URL;
+    $expected = "default-src 'self'; report-uri /" . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has default directive.'));
     $this->assertFalse($this->backdropGetHeader('X-Content-Security-Policy'),
@@ -298,25 +305,28 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testCspVendorPrefixWebkitAllDirectivesEmpty() {
     $form = array(
-      'seckit_xss[csp][checkbox]'              => TRUE,
-      'seckit_xss[csp][vendor-prefix][x]'      => FALSE,
-      'seckit_xss[csp][vendor-prefix][webkit]' => TRUE,
-      'seckit_xss[csp][default-src]'           => '',
-      'seckit_xss[csp][script-src]'            => '',
-      'seckit_xss[csp][object-src]'            => '',
-      'seckit_xss[csp][img-src]'               => '',
-      'seckit_xss[csp][media-src]'             => '',
-      'seckit_xss[csp][style-src]'             => '',
-      'seckit_xss[csp][frame-src]'             => '',
-      'seckit_xss[csp][frame-ancestors]'       => '',
-      'seckit_xss[csp][child-src]'             => '',
-      'seckit_xss[csp][font-src]'              => '',
-      'seckit_xss[csp][connect-src]'           => '',
-      'seckit_xss[csp][report-uri]'            => SECKIT_CSP_REPORT_URL,
-      'seckit_xss[csp][policy-uri]'            => '',
+      'xss[csp][checkbox]' => TRUE,
+      'xss[csp][vendor-prefix][x]' => FALSE,
+      'xss[csp][vendor-prefix][webkit]' => TRUE,
+      'xss[csp][directives][default-src]' => '',
+      'xss[csp][directives][script-src]' => '',
+      'xss[csp][directives][script-src-elem]' => '',
+      'xss[csp][directives][object-src]' => '',
+      'xss[csp][directives][img-src]' => '',
+      'xss[csp][directives][media-src]' => '',
+      'xss[csp][directives][style-src]' => '',
+      'xss[csp][directives][style-src-elem]' => '',
+      'xss[csp][directives][frame-src]' => '',
+      'xss[csp][directives][frame-ancestors]' => '',
+      'xss[csp][directives][child-src]' => '',
+      'xss[csp][directives][font-src]' => '',
+      'xss[csp][directives][connect-src]' => '',
+      'xss[csp][directives][worker-src]' => '',
+      'xss[csp][directives][report-uri]' => SECKIT_CSP_REPORT_URL,
+      'xss[csp][directives][policy-uri]' => '',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = "default-src 'self'; report-uri " . base_path() . SECKIT_CSP_REPORT_URL;
+    $expected = "default-src 'self'; report-uri /" . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has default directive.'));
     $this->assertFalse($this->backdropGetHeader('X-Content-Security-Policy'),
@@ -349,7 +359,7 @@ class SecKitTestCase extends BackdropWebTestCase {
     $form['xss[csp][checkbox]'] = TRUE;
     $form['xss[csp][upgrade-req]'] = TRUE;
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = "default-src 'self'; report-uri " . base_path() . SECKIT_CSP_REPORT_URL . '; upgrade-insecure-requests';
+    $expected = "upgrade-insecure-requests; default-src 'self'; report-uri /" . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy has defaults plus upgrade-insecure-requests.'));
   }
@@ -360,9 +370,9 @@ class SecKitTestCase extends BackdropWebTestCase {
   public function testCspDirectiveLongValue() {
     $long_csp_directive = str_repeat('CSP', 1000);
     $form['xss[csp][checkbox]'] = TRUE;
-    $form['xss[csp][default-src]'] = $long_csp_directive;
+    $form['xss[csp][directives][default-src]'] = $long_csp_directive;
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
-    $expected = 'default-src ' . $long_csp_directive . '; report-uri ' . base_path() . SECKIT_CSP_REPORT_URL;
+    $expected = 'default-src ' . $long_csp_directive . '; report-uri /' . SECKIT_CSP_REPORT_URL;
     $this->assertEqual($expected, $this->backdropGetHeader('Content-Security-Policy'),
       t('Content-Security-Policy directive accepted a long value.'));
   }
@@ -372,7 +382,7 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testCspDirectiveMultilineValue() {
     $form['xss[csp][checkbox]'] = TRUE;
-    $form['xss[csp][frame-ancestors]'] = "first\nsecond";
+    $form['xss[csp][directives][frame-ancestors]'] = "first\nsecond";
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $expected = t('CSP directives cannot contain newlines.');
     $this->assertText($expected, t('Multiline Content-Security-Policy directive rejected.'));
@@ -436,8 +446,8 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testOriginAllowsSpecifiedSource() {
     $form = array(
-      'seckit_csrf[origin]' => TRUE,
-      'seckit_csrf[origin_whitelist]' => 'https://www.example.com',
+      'csrf[origin]' => TRUE,
+      'csrf[origin_whitelist]' => 'https://www.example.com',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'),
@@ -451,8 +461,8 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testOriginAllowsSpecifiedSourceMultiWhitelist() {
     $form = array(
-      'seckit_csrf[origin]' => TRUE,
-      'seckit_csrf[origin_whitelist]' => 'http://www.example.com, https://www.example.com, https://example.com:8080',
+      'csrf[origin]' => TRUE,
+      'csrf[origin_whitelist]' => 'http://www.example.com, https://www.example.com, https://example.com:8080',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'),
@@ -547,9 +557,9 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testHstsAllDirectives() {
     $form = array(
-      'seckit_ssl[hsts]' => TRUE,
-      'seckit_ssl[hsts_max_age]' => 1000,
-      'seckit_ssl[hsts_subdomains]' => 1,
+      'ssl[hsts]' => TRUE,
+      'ssl[hsts_max_age]' => 1000,
+      'ssl[hsts_subdomains]' => 1,
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $expected = 'max-age=1000; includeSubDomains';
@@ -572,8 +582,8 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testEnabledFromOrigin() {
     $form = array(
-      'seckit_various[from_origin]' => TRUE,
-      'seckit_various[from_origin_destination]' => 'same',
+      'various[from_origin]' => TRUE,
+      'various[from_origin_destination]' => 'same',
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $this->assertEqual('same', $this->backdropGetHeader('From-Origin'),
@@ -614,8 +624,8 @@ class SecKitTestCase extends BackdropWebTestCase {
    */
   public function testEnabledFeaturePolicy() {
     $form = array(
-      'seckit_fp[feature_policy]' => TRUE,
-      'seckit_fp[feature_policy_policy]' => "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'",
+      'fp[feature_policy]' => TRUE,
+      'fp[feature_policy_policy]' => "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'",
     );
     $this->backdropPost('admin/config/system/seckit', $form, t('Save configuration'));
     $expected = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";

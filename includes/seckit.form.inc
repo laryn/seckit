@@ -994,6 +994,9 @@ function seckit_admin_form_validate($form, &$form_state) {
  * Submits form.
  */
 function seckit_admin_form_submit($form, &$form_state) {
+  // Ensure the core 'x_frame_options' setting matches.
+  $x_frame_option = (!empty($form_state['values']['clickjacking']['x_frame'])) ? $form_state['values']['clickjacking']['x_frame'] : '';
+  config_set('system.core', 'x_frame_options', $x_frame_option);
   // Our dependency on seckit_boot() may have changed, so reset the
   // bootstrap module settings and cache.
   _system_update_bootstrap_status();
