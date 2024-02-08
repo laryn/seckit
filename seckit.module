@@ -897,8 +897,8 @@ function _seckit_get_options($reset = FALSE, $alter = TRUE) {
 
   // Ensure there is a non-empty value for the CSP default-src.
   $csp_defaults = $defaults['xss']['csp'];
-  if (!$options['xss']['csp']['default-src']) {
-    $options['xss']['csp']['default-src'] = $csp_defaults['default-src'];
+  if (!$options['xss']['csp']['directives']['default-src']) {
+    $options['xss']['csp']['directives']['default-src'] = $csp_defaults['directives']['default-src'];
   }
 
   // Convert ['clickjacking']['x_frame_allow_from'] to an array.

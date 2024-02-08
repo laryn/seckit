@@ -973,7 +973,7 @@ function seckit_admin_form_validate($form, &$form_state) {
   foreach ($csp_textareas as $csp_textarea) {
     $value = $form_state['values']['xss']['csp']['directives'][$csp_textarea];
     if ($value !== str_replace(array("\r", "\n"), '', (string) $value)) {
-      form_error($form['xss']['csp'][$csp_textarea], t('CSP directives cannot contain newlines.'));
+      form_error($form['xss']['csp']['directives'][$csp_textarea], t('CSP directives cannot contain newlines.'));
     }
   }
   $value = $form_state['values']['fp']['feature_policy_policy'];
