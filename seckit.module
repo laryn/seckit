@@ -36,6 +36,17 @@ define('SECKIT_CSP_REPORT_FLOOD_LIMIT_GLOBAL', 1000);
 define('SECKIT_CSP_REPORT_FLOOD_WINDOW_GLOBAL', 3600);
 
 /**
+ * Implements hook_config_info().
+ */
+function seckit_config_info() {
+  $prefixes['seckit.settings'] = array(
+    'label' => t('Security Kit (SecKit) settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_permission().
  */
 function seckit_permission() {
