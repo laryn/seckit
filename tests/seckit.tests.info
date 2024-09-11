@@ -3,3 +3,9 @@ name = Security Kit functionality
 description = Tests functionality and settings page of Security Kit module.
 group = Security Kit
 file = seckit.test
+
+[SecKitReportCspViolationTest]
+name = Security Kit CSP violation reports
+description = Tests the CSP violation report functionality of Security Kit module.
+group = Security Kit
+file = seckit.test
